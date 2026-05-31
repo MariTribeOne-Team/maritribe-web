@@ -41,8 +41,6 @@
       color: var(--text-primary);
       position: relative;
     }
-
-    /* Grain texture overlay */
     body::before {
       content: '';
       position: fixed;
@@ -57,7 +55,6 @@
 
     h1, h2, h3 { font-family: 'DM Serif Display', serif; font-weight: 400; }
 
-    /* ── Animations ── */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -106,7 +103,6 @@
     .animate-in-delay { animation: fadeInUp 0.5s ease-out 0.15s both; }
     .animate-in-delay-2 { animation: fadeInUp 0.5s ease-out 0.3s both; }
 
-    /* ── Top Bar ── */
     .topbar {
       background: var(--bottle-green);
       padding: 14px 20px;
@@ -140,14 +136,12 @@
       text-decoration: none;
     }
 
-    /* ── Container ── */
     .container {
       max-width: 560px;
       margin: 0 auto;
       padding: 24px 16px 40px;
     }
 
-    /* ── Skeleton Loading ── */
     .skeleton {
       animation: fadeInUp 0.3s ease-out both;
     }
@@ -197,7 +191,6 @@
     }
     .skeleton-stat { height: 14px; width: 80px; }
 
-    /* ── Post Card ── */
     .post-card {
       background: var(--surface);
       border-radius: 18px;
@@ -289,7 +282,6 @@
       stroke-linejoin: round;
     }
 
-    /* ── CTA Banner ── */
     .cta-banner {
       margin-top: 20px;
       background: linear-gradient(135deg, var(--jam-light), var(--jam));
@@ -361,7 +353,6 @@
       pointer-events: none;
     }
 
-    /* App Store style buttons */
     .store-buttons {
       display: flex;
       gap: 12px;
@@ -402,7 +393,7 @@
       position: relative;
       overflow: hidden;
     }
-    /* Gradient mesh background */
+
     .community-header::before {
       content: '';
       position: absolute;
@@ -421,7 +412,7 @@
       background: var(--surface);
       border-radius: 24px 24px 0 0;
     }
-    /* Decorative wave SVG at bottom of community header */
+
     .community-wave {
       position: absolute;
       bottom: 20px; left: 0; right: 0;
@@ -503,7 +494,6 @@
       margin-left: 8px;
     }
 
-    /* ── Invite Page ── */
     .invite-card {
       background: var(--surface);
       border-radius: 18px;
@@ -535,7 +525,7 @@
       background: var(--surface);
       border-radius: 24px 24px 0 0;
     }
-    /* Compass SVG in invite hero */
+
     .invite-compass {
       width: 80px; height: 80px;
       margin: 0 auto 20px;
@@ -559,7 +549,7 @@
       line-height: 1.7;
       margin-bottom: 24px;
     }
-    /* Steps */
+
     .invite-steps {
       display: flex;
       align-items: center;
@@ -589,7 +579,6 @@
       font-size: 14px;
     }
 
-    /* ── Error Card ── */
     .error-card {
       background: var(--surface);
       border-radius: 18px;
@@ -612,7 +601,6 @@
       width: 80px; height: 80px;
     }
 
-    /* ── 404 Page ── */
     .four04-card {
       background: var(--surface);
       border-radius: 18px;
@@ -663,7 +651,7 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(15,74,60,0.35);
     }
-    /* CSS animated waves at bottom of 404 */
+
     .four04-waves {
       position: relative;
       width: 100%;
@@ -684,7 +672,6 @@
       animation: lighthouse-glow 3s ease-in-out infinite;
     }
 
-    /* ── Sticky App Bar (mobile) ── */
     .sticky-app-bar {
       display: none;
       position: fixed;
@@ -743,7 +730,6 @@
       .container { padding-bottom: 80px; }
     }
 
-    /* ── Footer ── */
     .site-footer {
       text-align: center;
       padding: 20px;
@@ -756,14 +742,12 @@
   </style>
 </head>
 <body>
-  <!-- Top bar -->
   <div class="topbar">
     <a class="topbar-logo" href="/"><span>MT</span></a>
     <a class="topbar-title" href="/">Maritribe</a>
   </div>
 
   <div class="container" id="app">
-    <!-- Skeleton loading (replaces old spinner) -->
     <div id="loader" class="skeleton">
       <div class="skeleton-card">
         <div class="skeleton-header">
@@ -788,7 +772,6 @@
     </div>
   </div>
 
-  <!-- Sticky mobile app bar (hidden by default, shown by JS for post/community pages) -->
   <div class="sticky-app-bar" id="stickyBar">
     <div class="sticky-app-bar-left">
       <div class="sticky-app-bar-icon">MT</div>
@@ -803,20 +786,18 @@
   <div class="site-footer">Built with care for maritime alumni</div>
 
   <script>
-    // Change this when switching environments (staging, production, etc.)
+    //staging changes . be mindful!
     const API_BASE = 'https://tribebackend.onrender.com';
     const app = document.getElementById('app');
     const loader = document.getElementById('loader');
 
     function hide(el) { el.style.display = 'none'; }
 
-    // Sticky bar close
     document.getElementById('stickyClose').addEventListener('click', function() {
       document.getElementById('stickyBar').classList.add('hidden');
     });
 
     function showStickyBar() {
-      // Only relevant on mobile, CSS handles visibility
       document.getElementById('stickyBar').classList.remove('hidden');
     }
 
@@ -845,7 +826,6 @@
       return mins + ' min read';
     }
 
-    // SVG icons
     const icons = {
       clap: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>',
       comment: '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
@@ -865,7 +845,6 @@
 
     function renderError(title, msg) {
       hide(loader);
-      // Choose illustration based on content
       var illustration = icons.fog;
       if (title === 'Private Community') {
         illustration = icons.lock;
@@ -881,7 +860,6 @@
         ${renderCTA()}`;
     }
 
-    // ── 404 Page ──
     function render404() {
       hide(loader);
       document.title = 'Page Not Found — Maritribe';
@@ -945,7 +923,6 @@
         ${renderCTA()}`;
     }
 
-    // ── Post View ──
     async function renderPost(postId) {
       try {
         const res = await fetch(API_BASE + '/public/posts/' + postId);
@@ -971,7 +948,6 @@
         const readTime = readingTime(post.body);
 
         document.title = (post.title || 'Post') + ' — Maritribe';
-        // Dynamic OG tags for link previews
         var ogTitle = document.querySelector('meta[property="og:title"]');
         var ogDesc = document.querySelector('meta[property="og:description"]');
         var ogImage = document.querySelector('meta[property="og:image"]');
@@ -1016,7 +992,6 @@
       }
     }
 
-    // ── Community Invite View ──
     function renderCommunityInvite(slug) {
       const name = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       document.title = 'Join ' + name + ' — Maritribe';
@@ -1058,7 +1033,6 @@
         </div>`;
     }
 
-    // ── App Invite View ──
     function renderAppInvite() {
       document.title = 'Join Maritribe';
       hide(loader);
@@ -1108,7 +1082,6 @@
         </div>`;
     }
 
-    // ── Router ──
     (function route() {
       const path = window.location.pathname;
       const segments = path.split('/').filter(Boolean);
