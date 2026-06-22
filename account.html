@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My account — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="episodes.html">Episodes</a>
+      <a href="create-post.html" data-mt-editoronly>Create post</a>
+      <span data-mt-auth></span>
+    </nav>
+  </div>
+</header>
+
+<section class="post-hero" style="padding:28px 0 36px;">
+  <div class="wrap">
+    <p class="overline" style="color:var(--gold);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;">My account</p>
+    <h1 style="font-family:var(--serif);font-size:38px;" id="hi">Your library</h1>
+  </div>
+</section>
+
+<div class="account-wrap">
+  <div class="account-tabs">
+    <button data-tab="bookmarks" class="active">⚓ Bookmarks</button>
+    <button data-tab="highlights">✦ Highlights</button>
+  </div>
+  <div id="tab-bookmarks"></div>
+  <div id="tab-highlights" style="display:none"></div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <span>© 2026 maritribeOne</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  function esc(s){ return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  if (!MT.session()) { MT.openAuth("signin"); }
+
+  var name = MT.currentName();
+  if (name) document.getElementById("hi").textContent = name + "’s library";
+
+  function renderBookmarks() {
+    var bm = MT.getBookmarks();
+    var host = document.getElementById("tab-bookmarks");
+    if (!bm.length) { host.innerHTML = '<div class="empty-state"><div class="big">⚓</div>No bookmarks yet.<br>Tap the bookmark button on any episode to save it here.</div>'; return; }
+    host.innerHTML = '<div class="bm-grid">' + bm.map(function (b) {
+      return '<div class="bm-card">' +
+        '<a href="' + esc(b.href) + '"><div class="bm-thumb"><img src="' + esc(b.thumb||"assets/mic.png") + '" alt=""></div>' +
+        '<div class="bm-body"><span class="tag">' + esc(b.category||"Episode") + '</span>' +
+        '<h3>' + esc(b.title) + '</h3>' +
+        '<p class="meta">' + esc(b.author||"") + (b.date ? ' · ' + esc(b.date) : '') + '</p></div></a>' +
+        '<button class="remove" data-id="' + esc(b.id) + '">Remove</button></div>';
+    }).join("") + '</div>';
+    host.querySelectorAll(".remove").forEach(function (btn) {
+      btn.addEventListener("click", function () { MT.toggleBookmark({ id: btn.dataset.id }); renderBookmarks(); });
+    });
+  }
+
+  function renderHighlights() {
+    var hl = MT.getHighlights();
+    var host = document.getElementById("tab-highlights");
+    if (!hl.length) { host.innerHTML = '<div class="empty-state"><div class="big">✦</div>No highlights yet.<br>Select text in any episode post and click “Highlight”.</div>'; return; }
+    host.innerHTML = '<div class="hl-list">' + hl.map(function (h) {
+      var href = h.episodeId === "ep1" ? "episode-1.html" : "post.html?id=" + h.episodeId;
+      return '<div class="hl-item"><p class="hl-quote">“' + esc(h.text) + '”</p>' +
+        '<div class="hl-meta"><a href="' + href + '">' + esc(h.episodeTitle||"View episode") + ' →</a>' +
+        '<button class="hl-del" data-id="' + esc(h.id) + '">Delete</button></div></div>';
+    }).join("") + '</div>';
+    host.querySelectorAll(".hl-del").forEach(function (btn) {
+      btn.addEventListener("click", function () { MT.removeHighlight(btn.dataset.id); renderHighlights(); });
+    });
+  }
+
+  document.querySelectorAll(".account-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".account-tabs button").forEach(function (x){ x.classList.remove("active"); });
+      b.classList.add("active");
+      document.getElementById("tab-bookmarks").style.display = b.dataset.tab === "bookmarks" ? "" : "none";
+      document.getElementById("tab-highlights").style.display = b.dataset.tab === "highlights" ? "" : "none";
+    });
+  });
+
+  renderBookmarks();
+  renderHighlights();
+</script>
+</body>
+</html>

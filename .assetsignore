@@ -1,0 +1,9 @@
+# Cloudflare Workers Assets: files/dirs here are NOT uploaded or served.
+# Critical: keep the git repository out of the public asset bundle.
+.git
+.git/**
+.gitignore
+.assetsignore
+node_modules
+wrangler.jsonc
+*.md

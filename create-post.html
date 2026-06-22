@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create post — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="episodes.html">Episodes</a>
+      <a href="create-post.html" class="active" data-mt-editoronly>Create post</a>
+      <span data-mt-auth></span>
+    </nav>
+  </div>
+</header>
+
+<div class="editor-wrap">
+  <div class="editor-grid">
+
+    <div class="editor-panel">
+      <h1>Create an episode post</h1>
+      <p class="sub">Fill the details, then add content blocks. It publishes to the top of the Episodes list.</p>
+
+      <div class="field">
+        <label>Episode title</label>
+        <input id="f-title" placeholder="e.g. The future of green corridors in South Asian shipping">
+      </div>
+      <div class="field">
+        <label>One-line summary (shown on the episode card)</label>
+        <textarea id="f-excerpt" rows="2" placeholder="A short, punchy summary of the conversation."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Category</label>
+          <select id="f-category">
+            <option>Regulation</option><option>Training</option><option>Technology</option>
+            <option>Welfare</option><option>Policy</option><option>Green Shipping</option><option>Interview</option>
+          </select>
+        </div>
+        <div class="field"><label>Duration</label><input id="f-duration" placeholder="e.g. 28 min"></div>
+        <div class="field"><label>Date</label><input id="f-date" type="date"></div>
+      </div>
+      <div class="field-row" style="grid-template-columns:1fr 1fr;">
+        <div class="field"><label>Guest / author</label><input id="f-author" placeholder="e.g. Capt. Meera Iyer"></div>
+        <div class="field"><label>Cover image URL (optional)</label><input id="f-cover" placeholder="leave blank for default mic"></div>
+      </div>
+      <div class="field">
+        <label>Lead YouTube video URL (optional)</label>
+        <input id="f-yt" placeholder="Paste a YouTube link — the video loads below so you can mark chapters">
+      </div>
+
+      <div id="lead-wrap" class="lead-wrap" style="display:none;">
+        <div class="lead-grid">
+          <div class="lead-col">
+            <div class="lead-video"><div id="lead-yt"></div></div>
+            <div id="mark-row" class="lead-mark" style="display:none;">
+              <button type="button" class="mt-btn mt-btn-primary" id="mark-btn">＋ Mark current moment</button>
+              <span class="lead-dur" id="lead-dur"></span>
+            </div>
+          </div>
+          <aside class="lead-chapters">
+            <div class="lc-head">Chapters<span class="lc-hint">play &amp; mark, or add manually</span></div>
+            <div class="ch-rows" id="ch-rows"></div>
+            <button type="button" class="ch-add" id="ch-add">＋ Add chapter</button>
+          </aside>
+        </div>
+      </div>
+
+      <h3 style="font-family:var(--serif);color:var(--green-900);font-size:22px;margin:28px 0 6px;">Content blocks</h3>
+      <div class="blocks" id="blocks"></div>
+    </div>
+
+    <aside class="add-block">
+      <h3>Add a block</h3>
+      <div class="add-grid">
+        <button data-add="heading">＋ Heading</button>
+        <button data-add="paragraph">＋ Paragraph</button>
+        <button data-add="bullets">＋ Bullet list</button>
+        <button data-add="takeaway">＋ Takeaway card</button>
+        <button data-add="youtube">＋ YouTube</button>
+        <button data-add="image">＋ Image</button>
+      </div>
+      <button class="mt-btn mt-btn-primary mt-btn-block publish" id="publish">Publish episode →</button>
+      <p style="font-family:var(--sans);font-size:12px;color:var(--muted);margin-top:10px;text-align:center;">Saved to this browser. New posts appear at the top of Episodes.</p>
+    </aside>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // editors only
+  if (!MT.isEditor()) { location.href = "login.html?mode=editor"; }
+
+  function ytId(url) {
+    var m = (url || "").match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : "";
+  }
+
+  var blocksEl = document.getElementById("blocks");
+  var KIND = { heading:"Heading", paragraph:"Paragraph", bullets:"Bullets", takeaway:"Takeaway", youtube:"YouTube", image:"Image" };
+
+  function makeBlock(type, data) {
+    data = data || {};
+    var el = document.createElement("div");
+    el.className = "block kind-" + type;
+    el.dataset.type = type;
+    var inner = '<span class="block-kind">' + KIND[type] + '</span>' +
+      '<div class="block-tools">' +
+        '<button data-act="up" title="Move up">↑</button>' +
+        '<button data-act="down" title="Move down">↓</button>' +
+        '<button data-act="del" title="Delete">✕</button>' +
+      '</div>';
+    if (type === "heading") inner += '<textarea data-f="text" rows="1" placeholder="Section heading">' + (data.text||"") + '</textarea>';
+    else if (type === "paragraph") inner += '<textarea data-f="text" rows="3" placeholder="Write a paragraph…">' + (data.text||"") + '</textarea>';
+    else if (type === "bullets") inner += '<textarea data-f="items" rows="4" placeholder="One bullet per line">' + ((data.items||[]).join("\n")) + '</textarea>';
+    else if (type === "takeaway") inner +=
+        '<input data-f="label" placeholder="Short label (e.g. Key takeaway)" style="width:100%;border:none;font-family:var(--sans);font-weight:700;color:var(--gold);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">' +
+        '<textarea data-f="text" rows="3" placeholder="The takeaway. Start with a bold sentence if you like.">' + (data.text||"") + '</textarea>';
+    else if (type === "youtube") inner +=
+        '<input data-f="url" placeholder="YouTube URL" value="' + (data.url||"") + '" style="width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:var(--sans);">' +
+        '<div class="yt-preview" data-preview></div>';
+    else if (type === "image") inner +=
+        '<input data-f="url" placeholder="Image URL" value="' + (data.url||"") + '" style="width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:var(--sans);margin-bottom:8px;">' +
+        '<input data-f="caption" placeholder="Caption (optional)" value="' + (data.caption||"") + '" style="width:100%;border:none;font-family:var(--sans);font-style:italic;color:var(--ink-soft);">';
+    el.innerHTML = inner;
+
+    el.querySelectorAll(".block-tools button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var act = b.dataset.act;
+        if (act === "del") el.remove();
+        else if (act === "up" && el.previousElementSibling) blocksEl.insertBefore(el, el.previousElementSibling);
+        else if (act === "down" && el.nextElementSibling) blocksEl.insertBefore(el.nextElementSibling, el);
+      });
+    });
+    if (type === "youtube") {
+      var input = el.querySelector('[data-f="url"]'), prev = el.querySelector("[data-preview]");
+      function upd() { var id = ytId(input.value); prev.innerHTML = id ? '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '"></iframe>' : ""; }
+      input.addEventListener("input", upd); upd();
+    }
+    // auto-grow textareas
+    el.querySelectorAll("textarea").forEach(function (t) {
+      function g(){ t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; }
+      t.addEventListener("input", g); setTimeout(g, 0);
+    });
+    return el;
+  }
+
+  function addBlock(type, data) { blocksEl.appendChild(makeBlock(type, data)); }
+
+  document.querySelectorAll("[data-add]").forEach(function (b) {
+    b.addEventListener("click", function () { addBlock(b.dataset.add); });
+  });
+
+  // default the date to today
+  (function () {
+    var d = new Date();
+    document.getElementById("f-date").value =
+      d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  })();
+  function prettyDate(iso) {
+    if (!iso) return "";
+    var p = iso.split("-");
+    var d = new Date(+p[0], +p[1]-1, +p[2]);
+    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  }
+
+  // start with a friendly default scaffold
+  addBlock("paragraph", { text: "" });
+  addBlock("heading", { text: "Key takeaways" });
+  addBlock("takeaway", {});
+
+  /* ---- chapters panel (beside the video) ---- */
+  var chRowsEl = document.getElementById("ch-rows");
+  function chRow(item) {
+    item = item || {};
+    var mn = item.t != null ? Math.floor(item.t / 60) : "";
+    var sc = item.t != null ? String(item.t % 60).padStart(2, "0") : "";
+    var lbl = item.label ? item.label.replace(/"/g, "&quot;") : "";
+    var row = document.createElement("div");
+    row.className = "ch-row";
+    row.innerHTML =
+      '<input class="ch-min" type="number" min="0" placeholder="0" value="' + mn + '">' +
+      '<input class="ch-sec" type="number" min="0" max="59" placeholder="00" value="' + sc + '">' +
+      '<input class="ch-label" placeholder="Chapter title" value="' + lbl + '">' +
+      '<button type="button" class="ch-del" title="Remove">✕</button>';
+    row.querySelector(".ch-del").addEventListener("click", function () { row.remove(); });
+    return row;
+  }
+  document.getElementById("ch-add").addEventListener("click", function () {
+    var r = chRow(); chRowsEl.appendChild(r); r.querySelector(".ch-label").focus(); r.scrollIntoView({ block: "nearest" });
+  });
+  function addChapterAtTime(t) {
+    var r = chRow({ t: t, label: "" });
+    chRowsEl.appendChild(r);
+    r.querySelector(".ch-label").focus();
+    r.scrollIntoView({ block: "nearest" });
+  }
+
+  /* ---- live lead-video player + mark-as-chapter ---- */
+  function fmtTime(sec) {
+    sec = Math.floor(sec || 0);
+    var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    return (h ? h + ":" + String(m).padStart(2,"0") : m) + ":" + String(s).padStart(2,"0");
+  }
+
+  var ytApiReady = false, leadPlayer = null, currentLeadId = null;
+  window.onYouTubeIframeAPIReady = function () { ytApiReady = true; if (currentLeadId) buildLeadPlayer(currentLeadId, true); };
+  (function () { var s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.body.appendChild(s); })();
+
+  function buildLeadPlayer(id, force) {
+    document.getElementById("lead-wrap").style.display = "block";
+    if (!ytApiReady) { currentLeadId = id; return; }       // will build when API ready
+    if (id === currentLeadId && leadPlayer && !force) return;
+    currentLeadId = id;
+    document.getElementById("mark-row").style.display = "none";
+    document.getElementById("lead-dur").textContent = "";
+    document.getElementById("lead-yt").innerHTML = "";
+    leadPlayer = new YT.Player("lead-yt", {
+      videoId: id,
+      playerVars: { rel: 0, modestbranding: 1 },
+      events: {
+        onReady: function () {
+          var d = leadPlayer.getDuration();
+          document.getElementById("lead-dur").textContent = d ? "Length " + fmtTime(d) : "";
+          document.getElementById("mark-row").style.display = "flex";
+        }
+      }
+    });
+  }
+
+  var ytDebounce;
+  document.getElementById("f-yt").addEventListener("input", function () {
+    var val = this.value;
+    clearTimeout(ytDebounce);
+    ytDebounce = setTimeout(function () {
+      var id = ytId(val);
+      if (id) buildLeadPlayer(id);
+      else { document.getElementById("lead-wrap").style.display = "none"; }
+    }, 500);
+  });
+
+  document.getElementById("mark-btn").addEventListener("click", function () {
+    if (!leadPlayer || !leadPlayer.getCurrentTime) return;
+    var t = Math.floor(leadPlayer.getCurrentTime());
+    addChapterAtTime(t);
+    MT.toast("Marked at " + fmtTime(t) + " — add a title");
+  });
+
+  document.getElementById("publish").addEventListener("click", function () {
+    var title = document.getElementById("f-title").value.trim();
+    if (!title) { MT.toast("Please add a title"); return; }
+    var blocks = [];
+    blocksEl.querySelectorAll(".block").forEach(function (el) {
+      var type = el.dataset.type, get = function (f) { var n = el.querySelector('[data-f="'+f+'"]'); return n ? n.value.trim() : ""; };
+      if (type === "bullets") {
+        var items = get("items").split("\n").map(function (s){return s.trim();}).filter(Boolean);
+        if (items.length) blocks.push({ type: "bullets", items: items });
+      } else if (type === "heading" || type === "paragraph") {
+        if (get("text")) blocks.push({ type: type, text: get("text") });
+      } else if (type === "takeaway") {
+        if (get("text")) blocks.push({ type: "takeaway", label: get("label") || "Takeaway", text: get("text") });
+      } else if (type === "youtube") {
+        var id = ytId(get("url")); if (id) blocks.push({ type: "youtube", id: id });
+      } else if (type === "image") {
+        if (get("url")) blocks.push({ type: "image", url: get("url"), caption: get("caption") });
+      }
+    });
+
+    // chapters come from the panel beside the video (not a content block)
+    var ch = [];
+    chRowsEl.querySelectorAll(".ch-row").forEach(function (row) {
+      var label = row.querySelector(".ch-label").value.trim();
+      if (!label) return;
+      var mn = parseInt(row.querySelector(".ch-min").value, 10) || 0;
+      var sc = parseInt(row.querySelector(".ch-sec").value, 10) || 0;
+      mn += Math.floor(sc / 60); sc = sc % 60; // normalize overflow
+      ch.push({ ts: String(mn).padStart(2, "0") + ":" + String(sc).padStart(2, "0"), t: mn * 60 + sc, label: label });
+    });
+    ch.sort(function (a, b) { return a.t - b.t; });
+    if (ch.length) blocks.push({ type: "chapters", items: ch });
+    var post = {
+      title: title,
+      excerpt: document.getElementById("f-excerpt").value.trim(),
+      category: document.getElementById("f-category").value,
+      duration: document.getElementById("f-duration").value.trim(),
+      date: prettyDate(document.getElementById("f-date").value),
+      author: document.getElementById("f-author").value.trim() || "maritribeOne",
+      cover: document.getElementById("f-cover").value.trim(),
+      youtubeId: ytId(document.getElementById("f-yt").value),
+      blocks: blocks
+    };
+    var saved = MT.savePost(post);
+    MT.toast("Published ✦");
+    setTimeout(function () { location.href = "post.html?id=" + saved.id; }, 500);
+  });
+</script>
+</body>
+</html>

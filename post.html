@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Episode — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="episodes.html" class="active">Episodes</a>
+      <a href="create-post.html" data-mt-editoronly>Create post</a>
+      <span data-mt-auth></span>
+    </nav>
+  </div>
+</header>
+
+<section class="post-hero">
+  <div class="wrap">
+    <a class="back-link" href="episodes.html">← All episodes</a>
+    <div class="ep-meta" id="p-meta"></div>
+    <h1 id="p-title"></h1>
+    <p class="guest" id="p-guest"></p>
+  </div>
+</section>
+
+<div class="post-body">
+  <div class="wrap">
+    <div id="p-media"></div>
+    <div class="editor-bar" id="p-editorbar" style="display:none">
+      <a href="#" id="p-edit">✎ Edit in editor</a>
+      <button class="del" id="p-del">✕ Delete post</button>
+    </div>
+    <div class="post-actions">
+      <button class="act" id="bm-act">
+        <svg viewBox="0 0 24 24"><path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1z"/></svg>
+        <span>Bookmark</span>
+      </button>
+      <span class="hint">✦ Select any text below to save a highlight</span>
+    </div>
+    <article class="article" id="p-article"></article>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <span>© 2026 maritribeOne · Honest conversations from the maritime world.</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  function esc(s){ return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function boldLead(text){
+    // bold the first sentence of a takeaway for a polished look
+    var m = text.match(/^(.+?[.!?])(\s|$)/);
+    if (m) return "<strong>" + esc(m[1]) + "</strong>" + esc(text.slice(m[1].length));
+    return esc(text);
+  }
+
+  var id = new URLSearchParams(location.search).get("id");
+  var post = id ? MT.getPost(id) : null;
+
+  if (!post) {
+    document.getElementById("p-title").textContent = "Post not found";
+    document.getElementById("p-article").innerHTML = '<p>This episode may have been removed. <a href="episodes.html" style="color:var(--green-700)">Back to all episodes →</a></p>';
+  } else {
+    document.title = post.title + " — maritribeOne";
+    document.getElementById("p-meta").innerHTML =
+      '<span class="tag">' + esc(post.category||"Episode") + '</span>' +
+      (post.duration ? '<span class="ep-dur">' + esc(post.duration) + '</span>' : '');
+    document.getElementById("p-title").textContent = post.title;
+    document.getElementById("p-guest").innerHTML =
+      '<span class="g-name">' + esc(post.author||"maritribeOne") + '</span>' +
+      (post.date ? ' — ' + esc(post.date) : '');
+
+    var chaptersBlock = (post.blocks || []).find(function (b) { return b.type === "chapters"; });
+
+    // lead video (centered), with clickable chapters below
+    if (post.youtubeId) {
+      var chHtml = "";
+      if (chaptersBlock) {
+        chHtml = '<aside class="chapters"><p class="s-head">In this episode</p><ul class="chapter-list" id="p-chapters">' +
+          chaptersBlock.items.map(function (c) {
+            return '<li><button data-t="' + c.t + '"><span class="ts">' + esc(c.ts) + '</span><span class="label">' + esc(c.label) + '</span></button></li>';
+          }).join("") + '</ul></aside>';
+      }
+      document.getElementById("p-media").innerHTML =
+        '<section class="media stacked"><div class="player-col">' +
+        '<div class="player-frame"><iframe id="p-ytplayer" src="https://www.youtube-nocookie.com/embed/' + post.youtubeId +
+        '?enablejsapi=1&rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>' +
+        '<div class="player-foot"><span class="pf-label">▶ Playing on maritribeOne' + (chaptersBlock ? ' · tap a chapter to jump' : '') + '</span></div>' +
+        '</div>' + chHtml + '</section>';
+    }
+
+    // article body (chapters block is shown by the player, not inline)
+    var html = "";
+    if (post.excerpt) html += '<p class="lead">' + esc(post.excerpt) + '</p>';
+    (post.blocks||[]).forEach(function (b) {
+      if (b.type === "heading") html += '<h2>' + esc(b.text) + '</h2>';
+      else if (b.type === "paragraph") html += '<p>' + esc(b.text) + '</p>';
+      else if (b.type === "bullets") html += '<ul class="bul">' + b.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("") + '</ul>';
+      else if (b.type === "takeaway") html += '<div class="takeaway"><span class="t-num">' + esc(b.label||"Takeaway") + '</span><p>' + boldLead(b.text) + '</p></div>';
+      else if (b.type === "youtube") html += '<div class="post-yt"><iframe src="https://www.youtube-nocookie.com/embed/' + b.id + '?rel=0" allowfullscreen></iframe></div>';
+      else if (b.type === "image") html += '<figure class="post-img"><img src="' + esc(b.url) + '" alt="">' + (b.caption ? '<figcaption>'+esc(b.caption)+'</figcaption>' : '') + '</figure>';
+    });
+    document.getElementById("p-article").innerHTML = html || '<p>(No content yet.)</p>';
+
+    // clickable chapters → seek the lead video
+    if (post.youtubeId && chaptersBlock) {
+      var ytApi = document.createElement("script");
+      ytApi.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(ytApi);
+      window.onYouTubeIframeAPIReady = function () { window._ytp = new YT.Player("p-ytplayer"); };
+      var chEl = document.getElementById("p-chapters");
+      chEl.addEventListener("click", function (e) {
+        var btn = e.target.closest("button[data-t]"); if (!btn) return;
+        var t = parseInt(btn.getAttribute("data-t"), 10);
+        chEl.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+        btn.classList.add("active");
+        if (window._ytp && window._ytp.seekTo) { window._ytp.seekTo(t, true); window._ytp.playVideo(); }
+        else { document.getElementById("p-ytplayer").src = "https://www.youtube-nocookie.com/embed/" + post.youtubeId + "?autoplay=1&rel=0&start=" + t; }
+      });
+    }
+
+    // bookmark
+    var meta = { id: post.id, title: post.title, category: post.category, duration: post.duration,
+                 author: post.author, date: post.date, thumb: post.cover || "assets/mic.png", href: "post.html?id=" + post.id };
+    var act = document.getElementById("bm-act");
+    function sync(){ var on = MT.isBookmarked(post.id); act.classList.toggle("on", on); act.querySelector("span").textContent = on ? "Bookmarked" : "Bookmark"; }
+    sync();
+    act.addEventListener("click", function(){ MT.toggleBookmark(meta); sync(); });
+
+    // highlights
+    MT.enableHighlighting(post.id, post.title, ".article");
+
+    // editor controls
+    if (MT.isEditor()) {
+      var bar = document.getElementById("p-editorbar");
+      bar.style.display = "flex";
+      document.getElementById("p-del").addEventListener("click", function () {
+        if (confirm("Delete this post?")) { MT.deletePost(post.id); location.href = "episodes.html"; }
+      });
+      document.getElementById("p-edit").style.display = "none"; // edit-in-place not wired; delete + recreate
+    }
+  }
+</script>
+</body>
+</html>

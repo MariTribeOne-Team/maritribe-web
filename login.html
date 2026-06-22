@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .login-shell { min-height: 100vh; display: grid; grid-template-columns: 1.05fr 1fr; }
+
+  /* left brand panel */
+  .login-brand {
+    background:
+      radial-gradient(90% 110% at 100% 0%, rgba(217,164,65,.18), transparent 55%),
+      radial-gradient(80% 120% at 0% 100%, rgba(36,96,74,.55), transparent 55%),
+      var(--green-900);
+    color: #fff; padding: 56px 60px; display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  .login-brand .top { display: flex; align-items: center; gap: 13px; text-decoration: none; color: #fff; }
+  .login-brand .top img { width: 50px; height: 50px; border-radius: 50%; }
+  .login-brand .top span { font-family: var(--serif); font-size: 23px; }
+  .login-brand h1 { font-family: var(--serif); font-size: 42px; line-height: 1.08; margin: 0 0 18px; max-width: 460px; }
+  .login-brand .blurb { color: rgba(255,255,255,.72); font-size: 17px; max-width: 400px; line-height: 1.6; margin-bottom: 30px; }
+  .login-feats { list-style: none; display: grid; gap: 14px; }
+  .login-feats li { display: flex; align-items: center; gap: 13px; font-size: 15px; color: rgba(255,255,255,.9); }
+  .login-feats .ic { width: 34px; height: 34px; border-radius: 9px; background: rgba(217,164,65,.16); color: var(--gold); display: grid; place-items: center; font-size: 16px; flex-shrink: 0; }
+  .login-brand .foot { color: rgba(255,255,255,.42); font-size: 13px; }
+
+  /* right form panel */
+  .login-main { display: grid; place-items: center; padding: 40px 32px; background: var(--cream); }
+  .login-card { width: 100%; max-width: 410px; }
+  .login-logo { display: none; align-items: center; gap: 11px; justify-content: center; margin-bottom: 26px; text-decoration: none; color: var(--green-900); }
+  .login-logo img { width: 44px; height: 44px; border-radius: 50%; }
+  .login-logo span { font-family: var(--serif); font-size: 21px; }
+
+  .seg { display: flex; gap: 4px; margin-bottom: 28px; background: var(--cream-card); border: 1px solid var(--line); padding: 5px; border-radius: 12px; }
+  .seg button { flex: 1; background: none; border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; padding: 10px 6px; border-radius: 8px; cursor: pointer; color: var(--ink-soft); transition: all .18s ease; }
+  .seg button:hover { color: var(--green-900); }
+  .seg button.active { background: var(--green-900); color: #fff; box-shadow: 0 4px 12px rgba(10,46,36,.18); }
+
+  .login-card h2 { font-family: var(--serif); font-size: 30px; color: var(--green-900); margin-bottom: 6px; }
+  .login-card .lead { color: var(--ink-soft); font-family: var(--sans); margin-bottom: 26px; font-size: 15px; line-height: 1.5; }
+
+  .lf-field { margin-bottom: 16px; }
+  .lf-field label { display: block; font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--green-900); margin-bottom: 7px; }
+  .lf-field input {
+    width: 100%; padding: 13px 15px; border: 1px solid var(--line); border-radius: 11px;
+    font-family: var(--sans); font-size: 15px; background: #fff; transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .lf-field input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(36,96,74,.12); }
+  .login-card .err { color: #9a2b2b; font-size: 13.5px; min-height: 20px; font-family: var(--sans); margin: 2px 0 6px; }
+  .login-card .submit { width: 100%; padding: 14px; font-size: 15px; border-radius: 11px; }
+  .login-foot { text-align: center; margin-top: 22px; font-family: var(--sans); font-size: 13.5px; color: var(--muted); }
+  .login-foot a { color: var(--green-700); font-weight: 600; text-decoration: none; }
+  .login-foot a:hover { color: var(--gold); }
+
+  @media (max-width: 860px) {
+    .login-shell { grid-template-columns: 1fr; }
+    .login-brand { display: none; }
+    .login-logo { display: flex; }
+  }
+</style>
+</head>
+<body>
+  <div class="login-shell">
+    <div class="login-brand">
+      <a class="top" href="index.html">
+        <img src="assets/MT_final.png" alt=""><span>maritribeOne</span>
+      </a>
+      <div>
+        <h1>Charting new waters for maritime professionals.</h1>
+        <p class="blurb">Sign in to make the podcast yours — keep the episodes you love and the moments that matter.</p>
+        <ul class="login-feats">
+          <li><span class="ic">⚓</span> Bookmark episodes to your own library</li>
+          <li><span class="ic">✦</span> Highlight & save quotes as you listen</li>
+          <li><span class="ic">✎</span> Editors publish new episodes</li>
+        </ul>
+      </div>
+      <p class="foot">© 2026 maritribeOne · Honest conversations from the maritime world.</p>
+    </div>
+
+    <div class="login-main">
+      <div class="login-card">
+        <a class="login-logo" href="index.html"><img src="assets/MT_final.png" alt=""><span>maritribeOne</span></a>
+
+        <div class="seg" role="tablist">
+          <button data-tab="signin" class="active">Sign in</button>
+          <button data-tab="signup">Create account</button>
+          <button data-tab="editor">Editor</button>
+        </div>
+
+        <h2 id="lc-title">Welcome back</h2>
+        <p class="lead" id="lc-lead">Sign in to reach your bookmarks and highlights.</p>
+
+        <form id="login-form" novalidate>
+          <div class="lf-field"><label>Name</label><input name="name" autocomplete="username" placeholder="Your name" required></div>
+          <div class="lf-field"><label>Password</label><input name="pass" type="password" autocomplete="current-password" placeholder="Your password" required></div>
+          <p class="err" id="lc-err"></p>
+          <button type="submit" class="mt-btn mt-btn-primary submit" id="lc-submit">Sign in</button>
+        </form>
+
+        <p class="login-foot" id="lc-switch"></p>
+        <p class="login-foot"><a href="index.html">← Back to maritribeOne</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    var mode = "signin";
+    var copy = {
+      signin: { t: "Welcome back", l: "Sign in to reach your bookmarks and highlights.", b: "Sign in",
+                s: 'New here? <a href="#" data-go="signup">Create a free account</a>' },
+      signup: { t: "Create your account", l: "Free — bookmark episodes and save highlights as you listen.", b: "Create account",
+                s: 'Already have an account? <a href="#" data-go="signin">Sign in</a>' },
+      editor: { t: "Editor access", l: "For the maritribeOne team — sign in to create and publish episodes.", b: "Sign in as editor",
+                s: 'Just here to listen? <a href="#" data-go="signin">Sign in as a member</a>' }
+    };
+    function setMode(m) {
+      mode = m;
+      document.querySelectorAll(".seg button").forEach(function (b) { b.classList.toggle("active", b.dataset.tab === m); });
+      document.getElementById("lc-title").textContent = copy[m].t;
+      document.getElementById("lc-lead").textContent = copy[m].l;
+      document.getElementById("lc-submit").textContent = copy[m].b;
+      document.getElementById("lc-switch").innerHTML = copy[m].s;
+      document.getElementById("lc-err").textContent = "";
+      var pass = document.querySelector('input[name="pass"]');
+      pass.setAttribute("autocomplete", m === "signup" ? "new-password" : "current-password");
+    }
+    document.querySelectorAll(".seg button").forEach(function (b) {
+      b.addEventListener("click", function () { setMode(b.dataset.tab); });
+    });
+    document.getElementById("lc-switch").addEventListener("click", function (e) {
+      var a = e.target.closest("a[data-go]"); if (!a) return;
+      e.preventDefault(); setMode(a.dataset.go);
+    });
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = e.target.name.value.trim(), pass = e.target.pass.value;
+      if (!name || !pass) { document.getElementById("lc-err").textContent = "Please fill in both fields."; return; }
+      var res = mode === "editor" ? MT.loginEditor(name, pass)
+              : mode === "signup" ? MT.signupUser(name, pass)
+              : MT.loginUser(name, pass);
+      if (res.ok) { location.href = mode === "editor" ? "create-post.html" : "episodes.html"; }
+      else { document.getElementById("lc-err").textContent = res.error; }
+    });
+    var qm = new URLSearchParams(location.search).get("mode");
+    setMode(qm && copy[qm] ? qm : "signin");
+  </script>
+</body>
+</html>

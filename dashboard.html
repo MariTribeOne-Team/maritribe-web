@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .dash-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 28px 90px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+  .kpi { background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px; }
+  .kpi .label { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--ink-soft); letter-spacing:.02em; }
+  .kpi .num { font-family:var(--serif); font-size:44px; color:var(--green-900); line-height:1.1; margin-top:6px; }
+  .kpi .sub { font-family:var(--sans); font-size:12px; color:var(--muted); margin-top:4px; }
+  .kpi.gold { background:var(--green-900); border-color:var(--green-900); }
+  .kpi.gold .label { color:var(--gold-soft); } .kpi.gold .num { color:#fff; } .kpi.gold .sub { color:rgba(255,255,255,.6); }
+  .panel { background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:22px; }
+  .panel h2 { font-family:var(--serif); font-size:22px; color:var(--green-900); margin-bottom:18px; }
+  .bars { display:flex; align-items:flex-end; gap:14px; height:200px; padding-top:10px; }
+  .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
+  .bar { width:100%; max-width:54px; background:linear-gradient(180deg,var(--green-600),var(--green-900)); border-radius:8px 8px 0 0; min-height:3px; position:relative; transition:height .5s ease; }
+  .bar .v { position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-family:var(--sans); font-size:13px; font-weight:700; color:var(--green-900); }
+  .bar-col .d { font-family:var(--sans); font-size:11px; color:var(--muted); }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  .list-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-family:var(--sans); font-size:14px; }
+  .list-row:last-child { border-bottom:none; }
+  .list-row .v { font-weight:700; color:var(--green-900); }
+  .reset { font-family:var(--sans); font-size:13px; color:#9a2b2b; background:none; border:1px solid var(--line); border-radius:20px; padding:7px 14px; cursor:pointer; }
+  @media (max-width:760px){ .kpis{grid-template-columns:1fr 1fr;} .two{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="episodes.html">Episodes</a>
+      <a href="create-post.html" data-mt-editoronly>Create post</a>
+      <a href="dashboard.html" class="active" data-mt-editoronly>Dashboard</a>
+      <span data-mt-auth></span>
+    </nav>
+  </div>
+</header>
+
+<section class="post-hero" style="padding:26px 0 34px;">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+    <div>
+      <p class="overline" style="color:var(--gold);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;">Editor dashboard</p>
+      <h1 style="font-family:var(--serif);font-size:36px;">Analytics overview</h1>
+    </div>
+    <button class="reset" id="reset" style="color:#fff;border-color:rgba(255,255,255,.3);background:transparent;">Reset analytics</button>
+  </div>
+</section>
+
+<div class="dash-wrap">
+  <div class="kpis">
+    <div class="kpi gold"><div class="label">Visits today</div><div class="num" id="k-visits-today">0</div><div class="sub">unique sessions</div></div>
+    <div class="kpi"><div class="label">Page views today</div><div class="num" id="k-views-today">0</div><div class="sub">all page loads</div></div>
+    <div class="kpi"><div class="label">Total visits</div><div class="num" id="k-visits">0</div><div class="sub">all time</div></div>
+    <div class="kpi"><div class="label">Total page views</div><div class="num" id="k-views">0</div><div class="sub">all time</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>Visits — last 7 days</h2>
+    <div class="bars" id="bars"></div>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h2>Most viewed pages</h2>
+      <div id="pages"></div>
+    </div>
+    <div class="panel">
+      <h2>Content &amp; audience</h2>
+      <div id="content"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img class="logo-mark" src="assets/MT_final.png" alt=""><span class="name">maritribeOne</span></a>
+    <span>© 2026 maritribeOne · Editor dashboard</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  if (!MT.isEditor()) { location.href = "login.html?mode=editor"; }
+
+  function dayKey(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function dayLabel(d){ return d.toLocaleDateString("en-US",{weekday:"short"}); }
+
+  var a = MT.getAnalytics();
+  var today = dayKey(new Date());
+  var t = a.byDay[today] || { views:0, visits:0 };
+  document.getElementById("k-visits-today").textContent = t.visits;
+  document.getElementById("k-views-today").textContent = t.views;
+  document.getElementById("k-visits").textContent = a.visits || 0;
+  document.getElementById("k-views").textContent = a.views || 0;
+
+  // last 7 days bar chart
+  var days = [];
+  for (var i = 6; i >= 0; i--) { var d = new Date(); d.setDate(d.getDate()-i); days.push(d); }
+  var maxV = Math.max(1, ...days.map(function(d){ var e = a.byDay[dayKey(d)]; return e ? e.visits : 0; }));
+  document.getElementById("bars").innerHTML = days.map(function(d){
+    var e = a.byDay[dayKey(d)] || { visits:0 };
+    var h = Math.round((e.visits / maxV) * 100);
+    return '<div class="bar-col"><div class="bar" style="height:'+h+'%"><span class="v">'+e.visits+'</span></div><span class="d">'+dayLabel(d)+'</span></div>';
+  }).join("");
+
+  // top pages
+  var pages = Object.keys(a.byPage||{}).map(function(p){ return {p:p, n:a.byPage[p]}; }).sort(function(x,y){return y.n-x.n;}).slice(0,8);
+  document.getElementById("pages").innerHTML = pages.length
+    ? pages.map(function(r){ return '<div class="list-row"><span>'+r.p+'</span><span class="v">'+r.n+'</span></div>'; }).join("")
+    : '<p style="color:var(--muted);font-family:var(--sans);font-size:14px;">No data yet.</p>';
+
+  // content + audience
+  var s = MT.getAudienceStats();
+  document.getElementById("content").innerHTML =
+    '<div class="list-row"><span>Editor posts published</span><span class="v">'+s.posts+'</span></div>' +
+    '<div class="list-row"><span>Registered accounts</span><span class="v">'+s.users+'</span></div>' +
+    '<div class="list-row"><span>Bookmarks saved</span><span class="v">'+s.bookmarks+'</span></div>' +
+    '<div class="list-row"><span>Highlights saved</span><span class="v">'+s.highlights+'</span></div>';
+
+  document.getElementById("reset").addEventListener("click", function(){
+    if (confirm("Reset all analytics counters? (does not delete posts or accounts)")) {
+      localStorage.removeItem("mt_analytics"); location.reload();
+    }
+  });
+</script>
+</body>
+</html>

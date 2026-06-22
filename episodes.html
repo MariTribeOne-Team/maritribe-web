@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All Episodes — maritribeOne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="episodes.html" class="active">Episodes</a>
+      <a href="create-post.html" data-mt-editoronly>Create post</a>
+      <span data-mt-auth></span>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="overline">The Podcast</p>
+    <h1>All Episodes</h1>
+    <p>Honest conversations with maritime leaders, technologists and government officers.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="layout">
+
+    <!-- Episode list (rendered by JS: new editor posts appear at the top) -->
+    <div class="episode-list" id="episode-list"></div>
+
+    <template id="legacy-episodes" hidden>
+
+      <a class="episode" href="episode-1.html">
+        <div class="ep-thumb">
+          <img src="assets/mic.png" alt="">
+          <span class="play"></span>
+          <span class="ep-num">EP 02</span>
+        </div>
+        <div class="ep-info">
+          <div class="ep-meta">
+            <span class="tag">Technology</span>
+            <span class="ep-dur">31 min</span>
+          </div>
+          <h2 class="ep-title">The port that moved faster by standing still: automation paradoxes at India's largest container terminal</h2>
+          <p class="ep-excerpt">Why the terminals that invested least in automation often outperformed those that invested most — and what that tells us about how to think about the next decade of port technology.</p>
+          <p class="ep-byline"><span class="author">Rajesh Nair</span><span class="dot">·</span><span class="date">June 3, 2026</span></p>
+        </div>
+      </a>
+
+      <a class="episode" href="episode-1.html">
+        <div class="ep-thumb">
+          <img src="assets/mic.png" alt="">
+          <span class="play"></span>
+          <span class="ep-num">EP 03</span>
+        </div>
+        <div class="ep-info">
+          <div class="ep-meta">
+            <span class="tag">Green Shipping</span>
+            <span class="ep-dur">34 min</span>
+          </div>
+          <h2 class="ep-title">Methanol, ammonia, or hydrogen: how do you bet on the right fuel when the rules aren't written yet?</h2>
+          <p class="ep-excerpt">A frank conversation about the gap between IMO's ambitions and the commercial reality of ordering ships today — and why the safest bet might be no bet at all.</p>
+          <p class="ep-byline"><span class="author">Dr. Priya Menon</span><span class="dot">·</span><span class="date">May 27, 2026</span></p>
+        </div>
+      </a>
+
+      <a class="episode" href="episode-1.html">
+        <div class="ep-thumb">
+          <img src="assets/mic.png" alt="">
+          <span class="play"></span>
+          <span class="ep-num">EP 04</span>
+        </div>
+        <div class="ep-info">
+          <div class="ep-meta">
+            <span class="tag">Welfare</span>
+            <span class="ep-dur">29 min</span>
+          </div>
+          <h2 class="ep-title">The seafarer's mind: two decades of welfare work and what the industry still won't talk about</h2>
+          <p class="ep-excerpt">The stories welfare workers see and never share publicly — and why the industry's mental health conversation is still missing the people who need it most.</p>
+          <p class="ep-byline"><span class="author">Fr. Thomas D'Souza</span><span class="dot">·</span><span class="date">May 20, 2026</span></p>
+        </div>
+      </a>
+
+      <a class="episode" href="episode-1.html">
+        <div class="ep-thumb">
+          <img src="assets/mic.png" alt="">
+          <span class="play"></span>
+          <span class="ep-num">EP 05</span>
+        </div>
+        <div class="ep-info">
+          <div class="ep-meta">
+            <span class="tag">Training</span>
+            <span class="ep-dur">38 min</span>
+          </div>
+          <h2 class="ep-title">Crewing the future: where India's maritime workforce strategy is heading next</h2>
+          <p class="ep-excerpt">A wide-ranging look at how India plans to grow from a major supplier of seafarers into a global maritime talent hub — and the gaps that still stand in the way.</p>
+          <p class="ep-byline"><span class="author">Anjali Verma</span><span class="dot">·</span><span class="date">May 13, 2026</span></p>
+        </div>
+      </a>
+
+    </template>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="s-block">
+        <p class="s-head">Search</p>
+        <form class="search" onsubmit="return false">
+          <input type="text" placeholder="Search episodes…">
+          <button type="submit">Go</button>
+        </form>
+      </div>
+
+      <div class="s-block">
+        <p class="s-head">Listen on</p>
+        <div class="listen">
+          <a href="#"><span class="dot-ic dot-spotify"></span>Spotify</a>
+          <a href="#"><span class="dot-ic dot-apple"></span>Apple Podcasts</a>
+          <a href="#"><span class="dot-ic dot-youtube"></span>YouTube</a>
+        </div>
+      </div>
+
+      <div class="s-block">
+        <p class="s-head">Topics</p>
+        <div class="topics">
+          <a href="#" class="active">All</a>
+          <a href="#">Regulation</a>
+          <a href="#">Training</a>
+          <a href="#">Technology</a>
+          <a href="#">Welfare</a>
+          <a href="#">Policy</a>
+          <a href="#">Green Shipping</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="assets/MT_final.png" alt="">
+      <span class="name">maritribeOne</span>
+    </a>
+    <span>© 2026 maritribeOne · Honest conversations from the maritime world.</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // Seed (original) episodes — only EP 01 has a full written post.
+  var SEED = [
+    { id:"ep1", num:"EP 01", category:"Regulation", duration:"26 min",
+      title:"Twenty years on the regulatory side of Indian shipping: what an examiner sees that nobody else does",
+      excerpt:"From rest hour violations nobody intends but everyone breaks, to agents quietly charging three to five lakh rupees for a placement, to the digitisation overhaul that cut exam results from three months to two weeks.",
+      author:"Capt. Harish Khatri", date:"June 10, 2026", thumb:"assets/mic.png", href:"episode-1.html" },
+    { id:"ep2", num:"EP 02", category:"Technology", duration:"31 min",
+      title:"The port that moved faster by standing still: automation paradoxes at India's largest container terminal",
+      excerpt:"Why the terminals that invested least in automation often outperformed those that invested most — and what that tells us about how to think about the next decade of port technology.",
+      author:"Rajesh Nair", date:"June 3, 2026", thumb:"assets/mic.png", href:"episode-1.html" },
+    { id:"ep3", num:"EP 03", category:"Green Shipping", duration:"34 min",
+      title:"Methanol, ammonia, or hydrogen: how do you bet on the right fuel when the rules aren't written yet?",
+      excerpt:"A frank conversation about the gap between IMO's ambitions and the commercial reality of ordering ships today — and why the safest bet might be no bet at all.",
+      author:"Dr. Priya Menon", date:"May 27, 2026", thumb:"assets/mic.png", href:"episode-1.html" },
+    { id:"ep4", num:"EP 04", category:"Welfare", duration:"29 min",
+      title:"The seafarer's mind: two decades of welfare work and what the industry still won't talk about",
+      excerpt:"The stories welfare workers see and never share publicly — and why the industry's mental health conversation is still missing the people who need it most.",
+      author:"Fr. Thomas D'Souza", date:"May 20, 2026", thumb:"assets/mic.png", href:"episode-1.html" },
+    { id:"ep5", num:"EP 05", category:"Training", duration:"38 min",
+      title:"Crewing the future: where India's maritime workforce strategy is heading next",
+      excerpt:"A wide-ranging look at how India plans to grow from a major supplier of seafarers into a global maritime talent hub — and the gaps that still stand in the way.",
+      author:"Anjali Verma", date:"May 13, 2026", thumb:"assets/mic.png", href:"episode-1.html" }
+  ];
+
+  function esc(s){ return (s||"").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  function renderEpisodes() {
+    var list = document.getElementById("episode-list");
+    // editor posts first (newest at top), then seed episodes
+    var posts = MT.getPosts().map(function (p, i) {
+      return {
+        id: p.id, num: "", category: p.category || "Episode", duration: p.duration || "",
+        title: p.title, excerpt: p.excerpt || "", author: p.author || "maritribeOne",
+        date: p.date || new Date(p.created).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}),
+        thumb: p.cover || "assets/mic.png", href: "post.html?id=" + p.id, isNew: true
+      };
+    });
+    var all = posts.concat(SEED);
+    list.innerHTML = all.map(function (ep) {
+      var marked = MT.isBookmarked(ep.id);
+      return '' +
+       '<div class="episode-row">' +
+         '<button class="bm-btn' + (marked ? " on" : "") + '" data-id="' + ep.id + '" title="Bookmark" aria-label="Bookmark">' +
+            bmIcon() + '</button>' +
+         '<a class="episode" href="' + ep.href + '">' +
+           '<div class="ep-thumb">' +
+             '<img src="' + esc(ep.thumb) + '" alt="">' +
+             '<span class="play"></span>' +
+             (ep.num ? '<span class="ep-num">' + esc(ep.num) + '</span>' : '') +
+             (ep.isNew ? '<span class="new-flag">NEW</span>' : '') +
+           '</div>' +
+           '<div class="ep-info">' +
+             '<div class="ep-meta"><span class="tag">' + esc(ep.category) + '</span>' +
+               (ep.duration ? '<span class="ep-dur">' + esc(ep.duration) + '</span>' : '') + '</div>' +
+             '<h2 class="ep-title">' + esc(ep.title) + '</h2>' +
+             '<p class="ep-excerpt">' + esc(ep.excerpt) + '</p>' +
+             '<p class="ep-byline"><span class="author">' + esc(ep.author) + '</span>' +
+               '<span class="dot">·</span><span class="date">' + esc(ep.date) + '</span></p>' +
+           '</div>' +
+         '</a>' +
+       '</div>';
+    }).join("");
+
+    // bookmark handlers
+    list.querySelectorAll(".bm-btn").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var ep = all.find(function (x) { return x.id === btn.dataset.id; });
+        var on = MT.toggleBookmark({ id: ep.id, title: ep.title, category: ep.category,
+          duration: ep.duration, author: ep.author, date: ep.date, thumb: ep.thumb, href: ep.href });
+        btn.classList.toggle("on", on);
+      });
+    });
+  }
+  function bmIcon(){ return '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1z"/></svg>'; }
+
+  renderEpisodes();
+</script>
+
+</body>
+</html>
