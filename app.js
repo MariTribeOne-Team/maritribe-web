@@ -60,6 +60,12 @@
     STORE.setSession({ role: "user", name: u.name });
     return { ok: true };
   }
+  // single sign-in: editor credentials unlock the editor view, everyone else is a member
+  function signIn(name, pass) {
+    if (loginEditor(name, pass).ok) return { ok: true, role: "editor" };
+    var u = loginUser(name, pass);
+    return u.ok ? { ok: true, role: "user" } : u;
+  }
   function logout() { STORE.setSession(null); location.reload(); }
 
   /* ---------------- posts ---------------- */
@@ -120,16 +126,14 @@
   /* ---------------- auth modal ---------------- */
   function openAuth(mode) {
     closeAuth();
-    var editorMode = mode === "editor";
     var overlay = document.createElement("div");
     overlay.className = "mt-modal-overlay";
     overlay.innerHTML =
       '<div class="mt-modal" role="dialog" aria-modal="true">' +
         '<button class="mt-modal-close" aria-label="Close">&times;</button>' +
         '<div class="mt-modal-tabs">' +
-          '<button data-tab="signin" class="' + (mode === "signin" ? "active" : "") + '">Sign in</button>' +
-          '<button data-tab="signup" class="' + (mode === "signup" || !mode ? "active" : "") + '">Create account</button>' +
-          '<button data-tab="editor" class="' + (editorMode ? "active" : "") + '">Editor</button>' +
+          '<button data-tab="signin" class="' + (mode !== "signup" ? "active" : "") + '">Sign in</button>' +
+          '<button data-tab="signup" class="' + (mode === "signup" ? "active" : "") + '">Create account</button>' +
         '</div>' +
         '<div class="mt-modal-body">' +
           '<p class="mt-modal-sub"></p>' +
@@ -143,7 +147,7 @@
       '</div>';
     document.body.appendChild(overlay);
 
-    var current = mode || "signup";
+    var current = mode === "signup" ? "signup" : "signin";
     function renderTab(tab) {
       current = tab;
       overlay.querySelectorAll(".mt-modal-tabs button").forEach(function (b) {
@@ -152,15 +156,15 @@
       var sub = overlay.querySelector(".mt-modal-sub");
       var submit = overlay.querySelector('button[type="submit"]');
       overlay.querySelector(".mt-auth-err").textContent = "";
-      if (tab === "editor") {
-        sub.innerHTML = "Editor / developer access — for creating and publishing episodes.";
-        submit.textContent = "Sign in as editor";
-      } else if (tab === "signin") {
+      var pass = overlay.querySelector('input[name="pass"]');
+      if (tab === "signin") {
         sub.textContent = "Welcome back. Sign in to reach your bookmarks and highlights.";
         submit.textContent = "Sign in";
+        pass.setAttribute("autocomplete", "current-password");
       } else {
         sub.textContent = "Create a free account to bookmark episodes and save highlights.";
         submit.textContent = "Create account";
+        pass.setAttribute("autocomplete", "new-password");
       }
     }
     renderTab(current);
@@ -175,16 +179,9 @@
     overlay.querySelector(".mt-auth-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var name = e.target.name.value, pass = e.target.pass.value;
-      var res = current === "editor" ? loginEditor(name, pass)
-              : current === "signin" ? loginUser(name, pass)
-              : signupUser(name, pass);
-      if (res.ok) {
-        closeAuth();
-        if (current === "editor") { location.href = "create-post.html"; }
-        else { location.reload(); }
-      } else {
-        overlay.querySelector(".mt-auth-err").textContent = res.error;
-      }
+      var res = current === "signin" ? signIn(name, pass) : signupUser(name, pass);
+      if (res.ok) { closeAuth(); location.reload(); }
+      else { overlay.querySelector(".mt-auth-err").textContent = res.error; }
     });
   }
   function escClose(e) { if (e.key === "Escape") closeAuth(); }
@@ -383,7 +380,7 @@
   /* ---------------- expose ---------------- */
   window.MT = {
     session: session, isEditor: isEditor, currentName: currentName,
-    loginEditor: loginEditor, signupUser: signupUser, loginUser: loginUser, logout: logout,
+    loginEditor: loginEditor, signupUser: signupUser, loginUser: loginUser, signIn: signIn, logout: logout,
     getPosts: getPosts, getPost: getPost, savePost: savePost, deletePost: deletePost,
     getBookmarks: getBookmarks, isBookmarked: isBookmarked, toggleBookmark: toggleBookmark,
     getHighlights: getHighlights, addHighlight: addHighlight, removeHighlight: removeHighlight,

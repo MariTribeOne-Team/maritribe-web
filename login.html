@@ -90,7 +90,6 @@
         <div class="seg" role="tablist">
           <button data-tab="signin" class="active">Sign in</button>
           <button data-tab="signup">Create account</button>
-          <button data-tab="editor">Editor</button>
         </div>
 
         <h2 id="lc-title">Welcome back</h2>
@@ -116,9 +115,7 @@
       signin: { t: "Welcome back", l: "Sign in to reach your bookmarks and highlights.", b: "Sign in",
                 s: 'New here? <a href="#" data-go="signup">Create a free account</a>' },
       signup: { t: "Create your account", l: "Free — bookmark episodes and save highlights as you listen.", b: "Create account",
-                s: 'Already have an account? <a href="#" data-go="signin">Sign in</a>' },
-      editor: { t: "Editor access", l: "For the maritribeOne team — sign in to create and publish episodes.", b: "Sign in as editor",
-                s: 'Just here to listen? <a href="#" data-go="signin">Sign in as a member</a>' }
+                s: 'Already have an account? <a href="#" data-go="signin">Sign in</a>' }
     };
     function setMode(m) {
       mode = m;
@@ -142,10 +139,8 @@
       e.preventDefault();
       var name = e.target.name.value.trim(), pass = e.target.pass.value;
       if (!name || !pass) { document.getElementById("lc-err").textContent = "Please fill in both fields."; return; }
-      var res = mode === "editor" ? MT.loginEditor(name, pass)
-              : mode === "signup" ? MT.signupUser(name, pass)
-              : MT.loginUser(name, pass);
-      if (res.ok) { location.href = mode === "editor" ? "create-post.html" : "episodes.html"; }
+      var res = mode === "signup" ? MT.signupUser(name, pass) : MT.signIn(name, pass);
+      if (res.ok) { location.href = "episodes.html"; }
       else { document.getElementById("lc-err").textContent = res.error; }
     });
     var qm = new URLSearchParams(location.search).get("mode");
