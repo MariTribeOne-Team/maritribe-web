@@ -7,3 +7,12 @@
 
 # macOS
 .DS_Store
+
+# QA app generated files
+qa-app/node_modules
+qa-app/.next
+qa-app/.next*
+
+# QA backend generated files
+qa-backend/node_modules
+qa-backend/dist

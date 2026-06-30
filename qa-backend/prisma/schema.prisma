@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum QaUserRole {
+  QA_REVIEWER
+  QA_ADMIN
+}
+
+enum QaSessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum PipelineRunStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum FlashcardStatus {
+  PENDING_REVIEW
+  ACCEPTED
+  ACCEPTED_WITH_EDIT
+  REJECTED
+}
+
+enum ReviewAction {
+  ACCEPTED
+  ACCEPTED_WITH_EDIT
+  REJECTED
+}
+
+enum PipelineRunAssetType {
+  OCR_JSON
+  EVIDENCE_UNITS_JSON
+  FLASHCARDS_JSON
+  EMBEDDINGS_JSON
+  USAGE_JSON
+  DASHBOARD_HTML
+  STATS_MD
+  SOURCE_PAGES_PDF
+  IMAGE
+  OTHER
+}
+
+model QaUser {
+  id             String         @id @default(cuid())
+  email          String         @unique
+  name           String
+  passwordHash   String
+  role           QaUserRole     @default(QA_REVIEWER)
+  isActive       Boolean        @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  sessions       QaSession[]
+  reviews        FlashcardReview[]
+  approvedCards  Flashcard[]    @relation("ApprovedByQaUser")
+
+  @@index([role, isActive])
+}
+
+model QaSession {
+  id                 String          @id @default(cuid())
+  qaUserId           String
+  refreshTokenHash   String          @unique
+  status             QaSessionStatus @default(ACTIVE)
+  expiresAt          DateTime
+  lastUsedAt         DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  revokedAt          DateTime?
+  revokeReason       String?
+  ipAddress          String?
+  userAgent          String?
+  qaUser             QaUser          @relation(fields: [qaUserId], references: [id], onDelete: Cascade)
+
+  @@index([qaUserId, status])
+  @@index([expiresAt])
+}
+
+model PipelineRun {
+  id                  String              @id @default(cuid())
+  externalRunKey      String?             @unique
+  documentTitle       String
+  sourceDocumentName  String?
+  sourceDocumentPath  String?
+  sourceDocumentUrl   String?
+  pipelineName        String?             @default("maritime_rag")
+  pipelineVersion     String?
+  status              PipelineRunStatus   @default(PROCESSING)
+  pageCount           Int?
+  processedPageCount  Int?
+  totalCards          Int                 @default(0)
+  pendingCards        Int                 @default(0)
+  acceptedCards       Int                 @default(0)
+  editedCards         Int                 @default(0)
+  rejectedCards       Int                 @default(0)
+  qualityPublishablePct Float?
+  metadataJson        Json?
+  startedAt           DateTime?
+  completedAt         DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  flashcards          Flashcard[]
+  assets              PipelineRunAsset[]
+
+  @@index([status, createdAt])
+  @@index([documentTitle])
+}
+
+model PipelineRunAsset {
+  id            String               @id @default(cuid())
+  pipelineRunId String
+  assetType     PipelineRunAssetType
+  fileName      String?
+  storagePath   String?
+  publicUrl     String?
+  mimeType      String?
+  metadataJson  Json?
+  createdAt     DateTime             @default(now())
+  pipelineRun   PipelineRun          @relation(fields: [pipelineRunId], references: [id], onDelete: Cascade)
+
+  @@index([pipelineRunId, assetType])
+}
+
+model Flashcard {
+  id                    String            @id @default(cuid())
+  pipelineRunId         String
+  externalCardKey       String?
+  sourceEvidenceUnitKey String?
+  cardType              String?
+  subject               String?
+  topic                 String?
+  sourcePageNumber      Int?
+  sourceImageUrl        String?
+  sourceImageAssetId    String?
+  qualityVerdict        String?
+  qualityScore          Float?
+  status                FlashcardStatus  @default(PENDING_REVIEW)
+  originalQuestion      String
+  originalAnswer        String
+  currentQuestion       String
+  currentAnswer         String
+  sourceSnippet         String?
+  sourceText            String?
+  ocrText               String?
+  contextJson           Json?
+  approvedByQaUserId    String?
+  approvedAt            DateTime?
+  publishedAt           DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  pipelineRun           PipelineRun      @relation(fields: [pipelineRunId], references: [id], onDelete: Cascade)
+  approvedByQaUser      QaUser?          @relation("ApprovedByQaUser", fields: [approvedByQaUserId], references: [id], onDelete: SetNull)
+  sources               FlashcardSource[]
+  reviews               FlashcardReview[]
+
+  @@index([pipelineRunId, status])
+  @@index([topic])
+  @@index([subject])
+  @@index([sourcePageNumber])
+  @@unique([pipelineRunId, externalCardKey])
+}
+
+model FlashcardSource {
+  id                 String    @id @default(cuid())
+  flashcardId        String
+  sourceOrder        Int       @default(0)
+  evidenceUnitKey    String?
+  sourcePageNumber   Int?
+  sourceHeading      String?
+  sourceSnippet      String?
+  sourceText         String?
+  ocrText            String?
+  imageUrl           String?
+  metadataJson       Json?
+  createdAt          DateTime  @default(now())
+  flashcard          Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+
+  @@index([flashcardId, sourceOrder])
+  @@index([evidenceUnitKey])
+}
+
+model FlashcardReview {
+  id                String       @id @default(cuid())
+  flashcardId       String
+  qaUserId          String
+  action            ReviewAction
+  reviewVersion     Int
+  isCurrent         Boolean      @default(true)
+  rejectionReason   String?
+  reviewerNote      String?
+  originalQuestion  String
+  originalAnswer    String
+  finalQuestion     String?
+  finalAnswer       String?
+  diffSummary       String?
+  learningLabel     String?
+  createdAt         DateTime     @default(now())
+  flashcard         Flashcard    @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  qaUser            QaUser       @relation(fields: [qaUserId], references: [id], onDelete: Cascade)
+
+  @@unique([flashcardId, reviewVersion])
+  @@index([flashcardId, isCurrent])
+  @@index([qaUserId, createdAt])
+}
