@@ -124,11 +124,19 @@ export default async function CardReviewPage({
                   <div>
                     <p className="overline" style={{ marginBottom: 8 }}>Flashcard</p>
                     <h2 className="card-hero-title">Review this card first</h2>
-                    {runId ? (
-                      <p className="card-hero-subcopy">
-                        Reviewing from this run page. Move card by card or jump straight to the next pending item.
-                      </p>
-                    ) : null}
+                    <div className="flashcard-meta" style={{ marginTop: 8, flexWrap: "wrap" }}>
+                      {card.format || card.cardType ? (
+                        <span className="status-pill">{(card.format || card.cardType || "").replaceAll("_", " ")}</span>
+                      ) : null}
+                      {card.subject ? <span>{card.subject}</span> : null}
+                      {card.topic ? <span>· {card.topic}</span> : null}
+                      {card.documentTitle ? (
+                        <span>· {card.documentTitle}{card.pageNumber ? ` · p.${card.pageNumber}` : ""}</span>
+                      ) : null}
+                      {card.qualityVerdict ? (
+                        <span>· {card.qualityVerdict.replaceAll("_", " ")}{card.qualityScore ? ` (${Math.round((card.qualityScore || 0) * 100)})` : ""}</span>
+                      ) : null}
+                    </div>
                   </div>
                   <span className="status-pill">{card.status.replaceAll("_", " ")}</span>
                 </div>
@@ -146,6 +154,46 @@ export default async function CardReviewPage({
                       ))}
                     </div>
                   </div>
+
+                  {card.imageUrl ? (
+                    <div className="focus-card-block">
+                      <div className="focus-card-label">Diagram</div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={card.imageUrl}
+                        alt="card diagram"
+                        style={{ maxWidth: "100%", borderRadius: 10, border: "1px solid #d0d7e2", background: "#fff" }}
+                      />
+                      {card.occlusions && card.occlusions.length ? (
+                        <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 6 }}>
+                          Hidden labels: {card.occlusions.map((o) => o.label).join(", ")}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {card.options && card.options.length ? (
+                    <div className="focus-card-block">
+                      <div className="focus-card-label">Options</div>
+                      <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
+                        {card.options.map((opt, i) => (
+                          <li
+                            key={`opt-${i}`}
+                            style={{ color: opt.isCorrect ? "#1a7f4b" : undefined, fontWeight: opt.isCorrect ? 600 : 400 }}
+                          >
+                            {opt.text}{opt.isCorrect ? "  ✓ correct" : ""}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {card.explanation ? (
+                    <div className="focus-card-block">
+                      <div className="focus-card-label">Explanation</div>
+                      <div className="focus-card-copy">{card.explanation}</div>
+                    </div>
+                  ) : null}
                 </div>
 
                 {(card.question !== card.currentQuestion || card.answer !== card.currentAnswer) ? (
@@ -170,7 +218,26 @@ export default async function CardReviewPage({
                   {sourceText ? <p><strong>Stored source context:</strong> {sourceText}</p> : null}
                   {hasDistinctOcr ? <p><strong>Raw OCR extract:</strong> {ocrText}</p> : null}
                   <p><strong>Evidence unit key:</strong> {card.evidenceUnit || "Not available"}</p>
-                  <p><strong>Page:</strong> {card.pageNumber}</p>
+                  <p><strong>Source document:</strong> {card.documentTitle || "Unknown"}{card.pageNumber ? ` — page ${card.pageNumber}` : ""}</p>
+                  {card.sourcePdfUrl ? (
+                    <div style={{ marginTop: 10 }}>
+                      <a
+                        className="btn btn-subtle"
+                        href={`${card.sourcePdfUrl}#page=${card.pageNumber || 1}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open {card.documentTitle || "source PDF"} (page {card.pageNumber || 1})
+                      </a>
+                      <iframe
+                        title="source pdf"
+                        src={`${card.sourcePdfUrl}#page=${card.pageNumber || 1}&view=FitH`}
+                        style={{ width: "100%", height: 460, marginTop: 10, border: "1px solid #d0d7e2", borderRadius: 10, background: "#fff" }}
+                      />
+                    </div>
+                  ) : (
+                    <p><strong>Page:</strong> {card.pageNumber}</p>
+                  )}
                 </div>
               </details>
 

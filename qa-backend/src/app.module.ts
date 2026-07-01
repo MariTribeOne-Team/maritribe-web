@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { HealthController } from './health.controller'
+import { QaAssetsController } from './qa-assets/qa-assets.controller'
 import { PrismaModule } from './prisma/prisma.module'
 import { QaAuthModule } from './qa-auth/qa-auth.module'
 import { QaIngestModule } from './qa-ingest/qa-ingest.module'
@@ -8,6 +9,6 @@ import { QaDataModule } from './qa-data/qa-data.module'
 
 @Module({
   imports: [PrismaModule, QaDataModule, QaAuthModule, QaReviewModule, QaIngestModule],
-  controllers: [HealthController],
+  controllers: [HealthController, QaAssetsController],
 })
 export class AppModule {}

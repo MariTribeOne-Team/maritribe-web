@@ -32,6 +32,19 @@ type BackendCard = {
   evidenceUnit: string;
   pageNumber: number;
   sourceText?: string;
+  cardType?: string | null;
+  format?: string | null;
+  subject?: string | null;
+  topic?: string | null;
+  qualityVerdict?: string | null;
+  qualityScore?: number | null;
+  imageUrl?: string | null;
+  options?: { text: string; isCorrect: boolean }[] | null;
+  blank?: { text: string | null; answers: string[] } | null;
+  occlusions?: Array<{ x: number; y: number; w: number; h: number; label: string }> | null;
+  explanation?: string | null;
+  documentTitle?: string | null;
+  sourcePdfUrl?: string | null;
 };
 
 type BackendReview = {

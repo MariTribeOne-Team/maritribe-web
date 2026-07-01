@@ -7,6 +7,15 @@ import {
   ReviewAction,
 } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+
+function qaPublicBase() {
+  return (process.env.QA_PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 4010}`).replace(
+    /\/+$/,
+    '',
+  )
+}
 
 export type QaReviewAction = ReviewAction
 export type QaApprovalStatus = FlashcardStatus
@@ -85,11 +94,14 @@ export class QaDataService {
   async getRunCards(runId: string, page = 1, limit = 50) {
     const run = await this.prisma.pipelineRun.findUnique({
       where: { id: runId },
+      include: { assets: { where: { assetType: 'SOURCE_PAGES_PDF' }, take: 1 } },
     })
 
     if (!run) {
       throw new NotFoundException('QA run not found')
     }
+
+    const runCtx = this.buildRunContext(run)
 
     const safePage = Math.max(page, 1)
     const safeLimit = Math.min(Math.max(limit, 1), 100)
@@ -114,7 +126,7 @@ export class QaDataService {
 
     return {
       run: this.mapRun(run),
-      cards: cards.map((card) => this.mapCard(card)),
+      cards: cards.map((card) => this.mapCard(card, runCtx)),
       pagination: {
         page: safePage,
         limit: safeLimit,
@@ -130,8 +142,9 @@ export class QaDataService {
     const card = await this.prisma.flashcard.findUnique({
       where: { id: cardId },
       include: {
-        sources: {
-          orderBy: { sourceOrder: 'asc' },
+        sources: { orderBy: { sourceOrder: 'asc' } },
+        pipelineRun: {
+          include: { assets: { where: { assetType: 'SOURCE_PAGES_PDF' }, take: 1 } },
         },
       },
     })
@@ -140,7 +153,7 @@ export class QaDataService {
       throw new NotFoundException('QA flashcard not found')
     }
 
-    return this.mapCard(card)
+    return this.mapCard(card, this.buildRunContext(card.pipelineRun))
   }
 
   async getCardReviews(cardId: string) {
@@ -404,7 +417,14 @@ export class QaDataService {
         pageCount: this.nullableNumber(payload.pageCount ?? usage.pages),
         processedPageCount: this.nullableNumber(payload.processedPageCount ?? usage.pages),
         qualityPublishablePct: this.nullableNumber(payload.qualityPublishablePct),
-        metadataJson: payload as Prisma.InputJsonValue,
+        metadataJson: {
+          pipelineName: this.nullableString(payload.pipelineName),
+          pipelineVersion: this.nullableString(payload.pipelineVersion),
+          runKey: this.nullableString(payload.runKey),
+          usage,
+          flashcardCount: flashcards.length,
+          evidenceUnitCount: evidenceUnits.length,
+        } as Prisma.InputJsonValue,
         startedAt: new Date(),
         completedAt: new Date(),
       },
@@ -499,6 +519,35 @@ export class QaDataService {
       skipDuplicates: true,
     })
 
+    // Persist the source PDF as a run asset so the QA UI can show/open the page it came from.
+    const assetPaths = (
+      payload.assets && typeof payload.assets === 'object'
+        ? (payload.assets as Record<string, unknown>)
+        : {}
+    ) as { sourcePdfPath?: unknown }
+    const sourcePdfPath =
+      this.nullableString(assetPaths.sourcePdfPath) ?? this.nullableString(document.path)
+    if (sourcePdfPath && fs.existsSync(sourcePdfPath)) {
+      try {
+        const destDir = path.join(process.cwd(), 'storage', 'runs', run.id)
+        fs.mkdirSync(destDir, { recursive: true })
+        const dest = path.join(destDir, 'source.pdf')
+        fs.copyFileSync(sourcePdfPath, dest)
+        await this.prisma.pipelineRunAsset.create({
+          data: {
+            pipelineRunId: run.id,
+            assetType: 'SOURCE_PAGES_PDF',
+            fileName: this.nullableString(document.fileName) ?? path.basename(sourcePdfPath),
+            storagePath: dest,
+            publicUrl: `/runs/${run.id}/source.pdf`,
+            mimeType: 'application/pdf',
+          },
+        })
+      } catch (error) {
+        console.error('Failed to persist source PDF asset', error)
+      }
+    }
+
     await this.recalculateRunCounters(this.prisma, run.id)
 
     return {
@@ -564,32 +613,90 @@ export class QaDataService {
     }
   }
 
-  private mapCard(card: {
-    id: string
-    pipelineRunId: string
-    status: FlashcardStatus
-    originalQuestion: string
-    originalAnswer: string
-    currentQuestion: string
-    currentAnswer: string
-    sourceSnippet: string | null
-    ocrText: string | null
-    sourceText: string | null
-    sourcePageNumber: number | null
-    sourceEvidenceUnitKey: string | null
-    sources?: Array<{
+  private buildRunContext(
+    run?: {
+      id: string
+      documentTitle?: string | null
+      sourceDocumentName?: string | null
+      assets?: Array<{ assetType: string; publicUrl: string | null }>
+    } | null,
+  ): { documentTitle: string | null; sourcePdfUrl: string | null } {
+    if (!run) {
+      return { documentTitle: null, sourcePdfUrl: null }
+    }
+    const pdfAsset = run.assets?.find((asset) => asset.assetType === 'SOURCE_PAGES_PDF')
+    const sourcePdfUrl = pdfAsset
+      ? `${qaPublicBase()}${pdfAsset.publicUrl ?? `/runs/${run.id}/source.pdf`}`
+      : null
+    return {
+      documentTitle: run.documentTitle ?? run.sourceDocumentName ?? null,
+      sourcePdfUrl,
+    }
+  }
+
+  private mapCard(
+    card: {
+      id: string
+      pipelineRunId: string
+      status: FlashcardStatus
+      cardType?: string | null
+      subject?: string | null
+      topic?: string | null
+      qualityVerdict?: string | null
+      qualityScore?: number | null
+      sourceImageUrl?: string | null
+      contextJson?: unknown
+      originalQuestion: string
+      originalAnswer: string
+      currentQuestion: string
+      currentAnswer: string
       sourceSnippet: string | null
       ocrText: string | null
       sourceText: string | null
       sourcePageNumber: number | null
-      evidenceUnitKey: string | null
-    }>
-  }) {
+      sourceEvidenceUnitKey: string | null
+      sources?: Array<{
+        sourceSnippet: string | null
+        ocrText: string | null
+        sourceText: string | null
+        sourcePageNumber: number | null
+        evidenceUnitKey: string | null
+      }>
+    },
+    runContext?: { documentTitle: string | null; sourcePdfUrl: string | null },
+  ) {
     const primarySource = card.sources?.[0]
+    const ctx =
+      card.contextJson && typeof card.contextJson === 'object'
+        ? (card.contextJson as Record<string, any>)
+        : {}
+    const format = typeof ctx.format === 'string' ? ctx.format : (card.cardType ?? null)
+    const options = Array.isArray(ctx.options)
+      ? ctx.options.map((o: any) => ({ text: String(o?.text ?? ''), isCorrect: Boolean(o?.is_correct) }))
+      : null
+    const blank =
+      ctx.blank && typeof ctx.blank === 'object'
+        ? {
+            text: typeof ctx.blank.text === 'string' ? ctx.blank.text : null,
+            answers: Array.isArray(ctx.blank.answers) ? ctx.blank.answers.map(String) : [],
+          }
+        : null
+    const occlusions = Array.isArray(ctx.occlusions) ? ctx.occlusions : null
     return {
       id: card.id,
       runId: card.pipelineRunId,
       status: card.status,
+      cardType: card.cardType ?? null,
+      format,
+      subject: card.subject ?? null,
+      topic: card.topic ?? null,
+      qualityVerdict: card.qualityVerdict ?? null,
+      qualityScore: card.qualityScore ?? null,
+      imageUrl: card.sourceImageUrl ?? null,
+      options,
+      blank,
+      occlusions,
+      explanation: typeof ctx.explanation === 'string' ? ctx.explanation : null,
       question: card.originalQuestion,
       answer: card.originalAnswer,
       currentQuestion: card.currentQuestion,
@@ -599,6 +706,8 @@ export class QaDataService {
       evidenceUnit: card.sourceEvidenceUnitKey ?? primarySource?.evidenceUnitKey ?? '',
       pageNumber: card.sourcePageNumber ?? primarySource?.sourcePageNumber ?? 0,
       sourceText: card.sourceText ?? primarySource?.sourceText ?? '',
+      documentTitle: runContext?.documentTitle ?? null,
+      sourcePdfUrl: runContext?.sourcePdfUrl ?? null,
     }
   }
 
