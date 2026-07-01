@@ -1,7 +1,7 @@
 # Block access to the git repository (defense-in-depth; .assetsignore is the primary guard)
-/.git           /404.html  404
-/.git/*         /404.html  404
-/.gitignore     /404.html  404
+/.git           /404.html  200
+/.git/*         /404.html  200
+/.gitignore     /404.html  200
 
 /p/*       /404.html  200
 /c/*       /404.html  200
