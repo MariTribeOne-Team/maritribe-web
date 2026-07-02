@@ -541,6 +541,9 @@ export class QaDataService {
             storagePath: dest,
             publicUrl: `/runs/${run.id}/source.pdf`,
             mimeType: 'application/pdf',
+            // Store bytes in the DB too so the preview works on any machine (fresh
+            // clone / different dev) without a local storage copy of the PDF.
+            data: fs.readFileSync(sourcePdfPath),
           },
         })
       } catch (error) {

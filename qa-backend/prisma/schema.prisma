@@ -125,6 +125,9 @@ model PipelineRunAsset {
   storagePath   String?
   publicUrl     String?
   mimeType      String?
+  // Inline bytes for the asset (e.g. the source PDF), so previews work on any
+  // machine connected to the DB without a committed/local storage copy.
+  data          Bytes?
   metadataJson  Json?
   createdAt     DateTime             @default(now())
   pipelineRun   PipelineRun          @relation(fields: [pipelineRunId], references: [id], onDelete: Cascade)
