@@ -7,3 +7,7 @@
 node_modules
 wrangler.jsonc
 *.md
+# Never publish local secrets even if someone creates them before a deploy
+.dev.vars*
+.env*
+.wrangler
