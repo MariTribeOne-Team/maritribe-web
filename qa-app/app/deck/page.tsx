@@ -1,4 +1,4 @@
-import { readDeckFromBackend } from "@/lib/deck-backend";
+import { readDeckFromBackend } from "@/lib/qa-backend";
 import { QaBackendError } from "../qa/backend-error";
 import Link from "next/link";
 import { readQaSession } from "@/lib/session";

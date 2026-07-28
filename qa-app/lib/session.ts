@@ -12,7 +12,7 @@ export async function writeQaSession(value: string) {
   cookieStore.set(QA_SESSION_COOKIE, value, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 60 * 60 * 8,
   });

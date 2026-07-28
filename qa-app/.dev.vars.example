@@ -1,0 +1,5 @@
+# Local Cloudflare Worker vars for `npm run preview`.
+# Copy to `.dev.vars` (gitignored) and fill in. In production these are set as
+# Worker vars/secrets in the Cloudflare dashboard instead.
+APP_BACKEND_BASE_URL="https://tribebackend.onrender.com"
+QA_BACKEND_BASE_URL="http://localhost:4010"
