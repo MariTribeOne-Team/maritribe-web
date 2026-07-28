@@ -225,4 +225,39 @@ export async function qaBackendRecentReviews(accessToken: string, limit = 30) {
   return parseJson<BackendReview[]>(response);
 }
 
+// Public deck view: reads the current run's cards (the `/cards` endpoint) and shapes
+// them for the /deck gallery. Previously lived in the redundant lib/deck-backend.ts.
+export async function readDeckFromBackend(limit = 60) {
+  const response = await fetch(`${getBackendBaseUrl()}/cards?limit=${limit}`, {
+    cache: "no-store",
+  });
+
+  const { run, cards } = await parseJson<{ run: BackendRun | null; cards: BackendCard[] }>(response);
+  const topics = new Set(cards.map((card) => card.evidenceUnit || "General")).size;
+
+  return {
+    run,
+    cards: cards.map((card) => ({
+      id: card.id,
+      cardType: card.status === "ACCEPTED_WITH_EDIT" ? "edited card" : "flashcard",
+      front: card.currentQuestion,
+      back: card.currentAnswer,
+      topic: card.evidenceUnit || "Unclassified",
+      subject: "Maritime",
+      page: card.pageNumber,
+      verdict: card.status.replaceAll("_", " "),
+      score: card.status === "PENDING_REVIEW" ? 0 : 100,
+      hasImage: false,
+      sourceSnippet: card.sourceSnippet,
+    })),
+    stats: {
+      cards: run?.totalCards ?? cards.length,
+      pending: run?.pending ?? cards.filter((card) => card.status === "PENDING_REVIEW").length,
+      accepted: (run?.accepted ?? 0) + (run?.edited ?? 0),
+      rejected: run?.rejected ?? 0,
+      topics,
+    },
+  };
+}
+
 export type { BackendCard, BackendReview, BackendRun };

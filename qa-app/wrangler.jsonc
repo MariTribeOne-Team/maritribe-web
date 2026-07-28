@@ -1,0 +1,20 @@
+{
+  // Cloudflare Worker config for the Next.js app (built by @opennextjs/cloudflare).
+  // Deploy with `npm run deploy` (from qa-app). The root ../wrangler.jsonc is the
+  // OLD static deploy and is retired at cutover.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maritribe-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Set runtime vars/secrets in the Cloudflare dashboard (or via `wrangler secret put`):
+  //   APP_BACKEND_BASE_URL  = https://tribebackend.onrender.com   (share-link post previews)
+  //   QA_BACKEND_BASE_URL   = <hosted qa-backend URL>             (QA review + /deck)
+}

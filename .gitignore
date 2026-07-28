@@ -12,6 +12,9 @@
 qa-app/node_modules
 qa-app/.next
 qa-app/.next*
+qa-app/.open-next
+qa-app/.wrangler
+qa-app/cloudflare-env.d.ts
 
 # QA backend generated files
 qa-backend/node_modules
