@@ -3,7 +3,9 @@
   // Deploy with `npm run deploy` (from qa-app). The root ../wrangler.jsonc is the
   // OLD static deploy and is retired at cutover.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "maritribe-web",
+  // Distinct from the OLD static worker "maritribe-web" so testing never touches
+  // the live site. At cutover, attach maritribe.one to THIS worker.
+  "name": "maritribe-web-next",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-03-25",
   "compatibility_flags": ["nodejs_compat"],
