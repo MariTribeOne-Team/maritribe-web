@@ -20,6 +20,11 @@ export type EpisodeTakeaway = {
   body: string;
 };
 
+export type EpisodeFind = {
+  label: string;
+  url?: string;
+};
+
 export type EpisodeDetail = EpisodeSummary & {
   guestRole: string;
   youtubeId?: string;
@@ -28,7 +33,7 @@ export type EpisodeDetail = EpisodeSummary & {
   learn: string[];
   takeaways: EpisodeTakeaway[];
   references: string[];
-  find: string[];
+  find: EpisodeFind[];
   closing: string;
   chapters: EpisodeChapter[];
 };
@@ -47,8 +52,20 @@ export const episodeSummaries: EpisodeSummary[] = [
     date: "June 10, 2026",
   },
   {
-    slug: "automation-paradoxes-indias-largest-container-terminal",
+    slug: "from-the-bridge-to-the-algorithm",
     number: "EP 02",
+    category: "Voyage Optimization",
+    duration: "36 min",
+    title:
+      "From the bridge to the algorithm: a tanker Master on what voyage optimization actually is, and why the industry keeps getting it wrong",
+    excerpt:
+      "A tanker Master turned voyage optimization specialist draws the line between weather routing and voyage optimization, explains why a vessel's digital twin decides everything, and recalls overriding an algorithm that told him to sail through ten-metre waves.",
+    author: "Capt. Ketan Bhatia",
+    date: "June 6, 2026",
+  },
+  {
+    slug: "automation-paradoxes-indias-largest-container-terminal",
+    number: "EP 03",
     category: "Technology",
     duration: "31 min",
     title:
@@ -60,7 +77,7 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "methanol-ammonia-hydrogen-right-fuel",
-    number: "EP 03",
+    number: "EP 04",
     category: "Green Shipping",
     duration: "34 min",
     title:
@@ -72,7 +89,7 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "seafarers-mind-welfare-work",
-    number: "EP 04",
+    number: "EP 05",
     category: "Welfare",
     duration: "29 min",
     title:
@@ -84,7 +101,7 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "crewing-the-future-india-maritime-workforce",
-    number: "EP 05",
+    number: "EP 06",
     category: "Training",
     duration: "38 min",
     title:
@@ -96,8 +113,16 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
 ];
 
-export const featuredEpisode: EpisodeDetail = {
-  ...episodeSummaries[0],
+function summaryOf(slug: string): EpisodeSummary {
+  const summary = episodeSummaries.find((episode) => episode.slug === slug);
+  if (!summary) {
+    throw new Error(`No episode summary found for slug: ${slug}`);
+  }
+  return summary;
+}
+
+const khatriDetail: EpisodeDetail = {
+  ...summaryOf("twenty-years-regulatory-side-indian-shipping"),
   guestRole: "CEO, Board of Examination for Seafarers (BES)",
   youtubeId: "_xRXKorM7yk",
   lead:
@@ -152,7 +177,7 @@ export const featuredEpisode: EpisodeDetail = {
     "Board of Examination for Seafarers",
     "IMO HTW Sub-Committee",
   ],
-  find: ["LinkedIn", "BES website"],
+  find: [{ label: "LinkedIn" }, { label: "BES website" }],
   closing:
     "This piece draws from a longer conversation with Capt. Harish Khatri on the maritribeOne podcast.",
   chapters: [
@@ -166,8 +191,157 @@ export const featuredEpisode: EpisodeDetail = {
   ],
 };
 
+const bhatiaDetail: EpisodeDetail = {
+  ...summaryOf("from-the-bridge-to-the-algorithm"),
+  guestRole: "Voyage Optimization and Vessel Performance Specialist",
+  youtubeId: "7gQ5WjTENzI",
+  lead:
+    "An Aframax voyage from the Middle East to Rotterdam carries a fuel bill close to a million dollars. Weather routing costs $500. And voyage optimization, the service most of the industry conflates it with, is an entirely different thing.",
+  intro: [
+    "Captain Ketan Bhatia spent two decades commanding tankers before making a deliberate move ashore, not into a superintendent's role or a port captain's desk, but into a discipline that barely had a name when he was at sea. He now works in voyage optimization and vessel performance, which puts him on the opposite side of a conversation he had many times as a master: the one where shore-based advice tells you to do something the ship cannot safely do. On this episode, he draws a clean line between weather routing and voyage optimization, explains what a digital twin actually is and why its accuracy determines the quality of every route recommendation, and walks through the moment he overrode a service provider's advice to sail through ten-metre waves.",
+  ],
+  learn: [
+    "Why weather routing and voyage optimization are not the same thing, and what each one is actually optimizing for",
+    "Why the accuracy of a vessel's digital twin determines the quality of every optimization recommendation it receives",
+    "The three inputs that make routing advice trustworthy, and what happens when any one of them is wrong",
+    "How a near-million dollar fuel decision becomes a very straightforward ROI calculation",
+    "Why some masters ignore routing advice, and what it actually takes to earn that trust back",
+    "What the industry gets wrong when it assumes a good system will run itself",
+  ],
+  takeaways: [
+    {
+      number: "01",
+      title: "Weather routing and voyage optimization are not interchangeable.",
+      body:
+        "Weather routing keeps a vessel safe at a fixed charter party speed. Voyage optimization goes further: it weighs fuel cost, hire cost, ETA targets, and a vessel-specific digital twin to find the least-cost path. Ketan was direct on the distinction: “When you say voyage optimization, you are not only keeping the vessel safe, avoiding the bad weather, but you are also trying to keep the commercials intact.”",
+    },
+    {
+      number: "02",
+      title: "The routing advice he overrode: proceed through ten-metre waves.",
+      body:
+        "A service provider's algorithm told his vessel to keep proceeding through a low pressure system with wave heights above ten metres. He overrode it using master's authority, reviewed the weather himself, reduced speed, altered course, and brought the vessel through safely. He reported it back to the provider. His question to them: “Are you actually seeing what the master is going to experience on the ship?”",
+    },
+    {
+      number: "03",
+      title: "Weather models and weather forecasts are the same term, but not the same output.",
+      body:
+        "Different models can give completely different predictions for the same developing storm. One may say a hurricane will recurve. Another may say it disappears within two days. As a master, Ketan gathered inputs from multiple sources and took a collective decision. As a routing advisor, the quality of that underlying forecast is the foundation of everything that follows.",
+    },
+    {
+      number: "04",
+      title: "Routing moved from a fax printout to a hurricane on your ECDIS screen.",
+      body:
+        "In the old days, routing came as a printed warning from the NAVTEX or EGC. Today, advisors send HTML files that load directly onto the ECDIS, where the master can see the vessel's track moving relative to a developing storm in real time. This shift from text warnings to live visual overlays helps mariners make far more informed decisions.",
+    },
+    {
+      number: "05",
+      title: "When the algorithm changes its mind every six hours, the engine room pays for it.",
+      body:
+        "When a routing advisor asks a vessel to change RPM every six to eight hours, that instruction has direct consequences for engine wear and machinery stress. Ketan gave a specific example: being asked to jump from 24 tons per day consumption to 36 tons within six hours. Good routing advice has to account for what the engine can actually absorb, not just what the algorithm calculates as optimal.",
+    },
+    {
+      number: "06",
+      title: "The digital twin has to be right before the advice can be.",
+      body:
+        "A vessel's digital twin includes its engine make, kilowatts, power output, and speed-consumption curves. If that model is inaccurate, the optimization is inaccurate. In Ketan's words: “Your route advice is as good as zero.” The twin has to be close enough to the actual vessel that when a speed is recommended, the ship can physically achieve it.",
+    },
+    {
+      number: "07",
+      title: "For weather routing, a generic model is enough. For voyage optimization, it is not.",
+      body:
+        "Ketan drew this line explicitly. Weather routing uses a fixed speed and consumption, so a generic model approximating the vessel's deadweight and draft is sufficient. Voyage optimization requires a vessel-specific digital twin because the route advice depends on what that particular ship can do at different speeds. Use a generic model for optimization and you produce advice the vessel may be unable to follow.",
+    },
+    {
+      number: "08",
+      title:
+        "Three inputs determine whether routing advice is useful: weather forecast, operational constraints, vessel model.",
+      body:
+        "The weather forecast has to be accurate, or the advisory is built on a false assumption. The operational constraint has to be understood: is the operator targeting ETA or fuel savings? And the vessel model has to reflect the actual ship. Miss any one of these three and, in Ketan's words, the whole idea goes for a toss.",
+    },
+    {
+      number: "09",
+      title: "A million-dollar fuel bill and a $500 decision.",
+      body:
+        "At roughly 40 tons per day over 25 days, the fuel cost on an Aframax voyage comes close to a million dollars. Weather routing costs approximately $500. Following the advice saves 3 to 7 percent of that fuel bill, between $30,000 and $70,000 on a single voyage. “It is absolutely a no-brainer,” Ketan said.",
+    },
+    {
+      number: "10",
+      title: "The master who said: who are you to advise me.",
+      body:
+        "Some masters distrust advice from people who haven't recently been to sea. Ketan has received emails from masters questioning his right to advise them at all. His response: “I am nobody. I am neither your operator nor your family. I am just here to advise you from a safety viewpoint and for making sure that your commercials are taken care of.” The trust problem between shore advisors and masters is real, and in his view, the only way through it is for routers to understand what the master is physically experiencing.",
+    },
+    {
+      number: "11",
+      title: "CII ratings can be improved through operational measures alone.",
+      body:
+        "Asked whether voyage optimization and weather routing can move a vessel from a D to a C CII rating without technical retrofits, Ketan's answer was yes. Advising vessels to proceed at eco speed, minimising time at anchorage, and reducing unnecessary fuel burn all feed directly into the CII calculation.",
+    },
+    {
+      number: "12",
+      title: "Voyage optimization costs more because monitoring costs more.",
+      body:
+        "Weather routing is a one-off service per voyage. Voyage optimization requires continuous tracking of whether the vessel is following the advised speed, consumption, and waypoints. Every deviation has to be caught and corrected. The higher cost reflects that monitoring burden directly.",
+    },
+    {
+      number: "13",
+      title: "He won't hire someone who trusts the algorithm blindly.",
+      body:
+        "Ketan said he prefers navigational officers for his team and welcomes engineers, but is cautious about analysts who rely entirely on the algorithm. Different vessel types behave differently in different weather. A bulk carrier is not a container ship. Without that experiential understanding, over-reliance on the algorithm becomes a genuine operational risk.",
+    },
+    {
+      number: "14",
+      title: "Voyage optimization is a process, not a tool.",
+      body:
+        "The biggest lie the industry tells itself, in Ketan's words: that a good system will run itself. “Voyage optimization is not a tool. It is actually a process.” The algorithm sometimes gives wrong advice. Manual intervention is still required. The human in the loop stays.",
+    },
+  ],
+  references: [
+    "EGC (Enhanced Group Call)",
+    "NAVTEX",
+    "ECDIS",
+    "Charter party",
+    "CII (Carbon Intensity Indicator)",
+    "Laycan",
+    "Arabian Sea southwest monsoon",
+  ],
+  find: [
+    { label: "LinkedIn", url: "https://in.linkedin.com/in/ketan-bhatia-ab71a110" },
+  ],
+  closing:
+    "This piece draws from a longer conversation with Capt. Ketan Bhatia on the maritribeOne podcast.",
+  chapters: [
+    { time: "00:00", label: "Intro" },
+    { time: "00:31", label: "The routing advice he overrode to keep his crew safe" },
+    { time: "02:33", label: "Two models, two completely different storms" },
+    { time: "04:03", label: "The job that didn't exist when he was sailing it" },
+    { time: "05:20", label: "Why most people confuse these two things" },
+    { time: "07:16", label: "From a fax printout to a hurricane on your screen" },
+    { time: "09:09", label: "The rpm change the engine room hates" },
+    { time: "11:26", label: "The twin that makes or breaks the advice" },
+    { time: "12:51", label: "When generic is good enough, when it is not" },
+    { time: "14:47", label: "The three inputs that make advice trustworthy" },
+    { time: "17:19", label: "What an optimization subscription gets you" },
+    { time: "21:51", label: "The zigzag through the Arabian Sea monsoon" },
+    { time: "24:26", label: "A million-dollar fuel bill and a $500 decision" },
+    { time: "26:33", label: "The master who said: who are you to advise me" },
+    { time: "30:21", label: "Choosing the right routing provider" },
+    { time: "31:47", label: "Can CII improve without a retrofit" },
+    { time: "32:58", label: "The analyst he will not hire" },
+    { time: "34:16", label: "Shipping's biggest lie about optimization" },
+  ],
+};
+
+export const episodeDetails: Record<string, EpisodeDetail> = {
+  [khatriDetail.slug]: khatriDetail,
+  [bhatiaDetail.slug]: bhatiaDetail,
+};
+
+/** The episode surfaced in "featured" slots (newest fully-produced episode). */
+export const featuredEpisode: EpisodeDetail = khatriDetail;
+
 export function getEpisodeBySlug(slug: string): EpisodeDetail | null {
-  if (slug === featuredEpisode.slug) return featuredEpisode;
+  const detail = episodeDetails[slug];
+  if (detail) return detail;
 
   const summary = episodeSummaries.find((episode) => episode.slug === slug);
   if (!summary) return null;

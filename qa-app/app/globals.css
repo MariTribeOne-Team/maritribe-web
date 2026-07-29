@@ -658,10 +658,35 @@ a {
 }
 
 .episode-chapters li {
+  display: block;
+}
+
+.episode-chapter-btn {
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
   gap: 10px;
   align-items: start;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.16s var(--ease, ease), transform 0.16s var(--ease, ease);
+}
+
+button.episode-chapter-btn:hover {
+  background: rgba(217, 164, 65, 0.1);
+}
+
+button.episode-chapter-btn.active {
+  background: rgba(217, 164, 65, 0.18);
+}
+
+.episode-chapter-btn:disabled {
+  cursor: default;
 }
 
 .episode-chapters li span {
