@@ -1,11 +1,48 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicHeader } from "../../components/public-header";
 import { PublicFooter } from "../../components/public-footer";
+import { EpisodePlayer } from "./episode-player";
 import { getEpisodeBySlug, episodeSummaries } from "@/lib/public-content";
 
 export function generateStaticParams() {
   return episodeSummaries.map((episode) => ({ slug: episode.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const episode = getEpisodeBySlug(slug);
+
+  if (!episode) {
+    return { title: "Episode not found — maritribeOne" };
+  }
+
+  const description = episode.excerpt || episode.lead;
+  const ogImage = episode.youtubeId
+    ? `https://i.ytimg.com/vi/${episode.youtubeId}/maxresdefault.jpg`
+    : "/og-preview.png";
+
+  return {
+    title: `${episode.title} — maritribeOne`,
+    description,
+    openGraph: {
+      title: episode.title,
+      description,
+      type: "article",
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: episode.youtubeId ? "summary_large_image" : "summary",
+      title: episode.title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function EpisodeDetailPage({
@@ -46,65 +83,11 @@ export default async function EpisodeDetailPage({
 
       <main className="episode-body-shell">
         <div className="wrap">
-          <section className="episode-media">
-            <div className="episode-player-card">
-              {episode.youtubeId ? (
-                <div className="episode-player-frame">
-                  <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${episode.youtubeId}?rel=0&modestbranding=1`}
-                    title={episode.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <div className="episode-player-placeholder">
-                  <span>Episode preview</span>
-                  <p>
-                    Media for this episode will appear here once the listening links and video are
-                    attached.
-                  </p>
-                </div>
-              )}
-              <div className="episode-player-foot">
-                <span>Playing on maritribeOne</span>
-                <div className="listen-links">
-                  <a href="#">Spotify</a>
-                  <a href="#">Apple</a>
-                  {episode.youtubeId ? (
-                    <a
-                      href={`https://www.youtube.com/watch?v=${episode.youtubeId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      YouTube
-                    </a>
-                  ) : (
-                    <a href="#">YouTube</a>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <aside className="episode-chapters">
-              <p className="marketing-kicker">In this episode</p>
-              <ul>
-                {episode.chapters.length ? (
-                  episode.chapters.map((chapter) => (
-                    <li key={`${chapter.time}-${chapter.label}`}>
-                      <span>{chapter.time}</span>
-                      <p>{chapter.label}</p>
-                    </li>
-                  ))
-                ) : (
-                  <li>
-                    <span>--:--</span>
-                    <p>Chapter markers will appear here when they are available for this episode.</p>
-                  </li>
-                )}
-              </ul>
-            </aside>
-          </section>
+          <EpisodePlayer
+            youtubeId={episode.youtubeId}
+            title={episode.title}
+            chapters={episode.chapters}
+          />
 
           <article className="episode-article">
             <p className="episode-lead">{episode.lead}</p>
@@ -152,7 +135,15 @@ export default async function EpisodeDetailPage({
                 <h2>Where to find the guest</h2>
                 <ul className="episode-chip-list">
                   {episode.find.map((item) => (
-                    <li key={item}>{item}</li>
+                    <li key={item.label}>
+                      {item.url ? (
+                        <a href={item.url} target="_blank" rel="noreferrer">
+                          {item.label}
+                        </a>
+                      ) : (
+                        item.label
+                      )}
+                    </li>
                   ))}
                 </ul>
               </>

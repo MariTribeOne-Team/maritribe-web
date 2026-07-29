@@ -3,11 +3,55 @@ import { PublicHeader } from "./components/public-header";
 import { PublicFooter } from "./components/public-footer";
 
 function ArticleParagraph({ children }: { children: React.ReactNode }) {
-  return <p className="home-paragraph">{children}</p>;
+  return <p className="home-paragraph reveal">{children}</p>;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="home-section-label">{children}</p>;
+  return <p className="home-section-label reveal">{children}</p>;
+}
+
+function CompassWatermark() {
+  return (
+    <svg
+      className="home-hero-compass"
+      viewBox="0 0 400 400"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <g stroke="#fff" strokeWidth="1.5">
+        <circle cx="200" cy="200" r="190" />
+        <circle cx="200" cy="200" r="160" />
+        <circle cx="200" cy="200" r="60" />
+        <polygon points="200,10 210,180 200,160 190,180" fill="#fff" opacity="0.5" />
+        <polygon points="200,390 210,220 200,240 190,220" fill="#fff" opacity="0.3" />
+        <polygon points="10,200 180,190 160,200 180,210" fill="#fff" opacity="0.3" />
+        <polygon points="390,200 220,190 240,200 220,210" fill="#fff" opacity="0.3" />
+        <polygon points="66,66 185,175 170,170 175,185" fill="#fff" opacity="0.2" />
+        <polygon points="334,66 225,175 230,170 215,185" fill="#fff" opacity="0.2" />
+        <polygon points="66,334 175,225 170,230 185,215" fill="#fff" opacity="0.2" />
+        <polygon points="334,334 225,225 215,230 230,215" fill="#fff" opacity="0.2" />
+      </g>
+    </svg>
+  );
+}
+
+function WaveDivider({ from, to, flip = false }: { from: string; to: string; flip?: boolean }) {
+  return (
+    <svg
+      className={flip ? "wave-divider flip" : "wave-divider"}
+      viewBox="0 0 1440 80"
+      preserveAspectRatio="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ background: from }}
+    >
+      <path
+        d={flip ? "M0,80 C480,0 960,0 1440,80 L1440,80 L0,80 Z" : "M0,0 C360,80 1080,80 1440,0 L1440,80 L0,80 Z"}
+        fill={to}
+      />
+    </svg>
+  );
 }
 
 export default function HomePage() {
@@ -21,6 +65,7 @@ export default function HomePage() {
       />
 
       <section className="home-hero">
+        <CompassWatermark />
         <div className="wrap home-hero-inner">
           <p className="overline">Why maritribeOne exists</p>
           <h1 className="home-hero-title">
@@ -30,11 +75,27 @@ export default function HomePage() {
             </span>
           </h1>
         </div>
+        <div className="home-scroll-hint" aria-hidden="true">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
       </section>
+
+      <WaveDivider from="var(--green-900)" to="var(--cream)" />
 
       <main className="home-main">
         <article className="home-article">
-          <p className="home-intro">
+          <p className="home-intro reveal">
             A Croatian chief engineer can board a Japanese-built VLCC in Houston, walk straight
             into the engine room, and immediately troubleshoot a Wartsila engine designed in
             Switzerland. They&apos;ve never seen this specific hull before, yet they know its pulse.
@@ -93,7 +154,7 @@ export default function HomePage() {
             amateurs again.
           </ArticleParagraph>
 
-          <aside className="home-quote">
+          <aside className="home-quote reveal">
             <p>
               We believe that when you leave the sea tomorrow, you shouldn&apos;t have to leave
               shipping. You shouldn&apos;t have to waste time playing catch-up.
@@ -109,8 +170,10 @@ export default function HomePage() {
           </ArticleParagraph>
         </article>
 
+        <WaveDivider from="var(--cream)" to="var(--green-900)" flip />
+
         <section className="home-cta-band">
-          <div className="wrap home-cta-inner">
+          <div className="wrap home-cta-inner reveal">
             <p className="home-cta-label">Welcome To The Tribe</p>
             <h2>Conversations from every corner of the industry.</h2>
             <div className="home-cta-row">
