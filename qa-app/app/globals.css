@@ -2930,3 +2930,201 @@ a {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AESTHETIC ENHANCEMENT LAYER
+   Adds gradients, layered depth, and motion on top of the existing maritime
+   palette. Same colors — only surfaces and interactions are elevated. Appended
+   last so it refines earlier rules via cascade order.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --grad-green: linear-gradient(135deg, var(--green-700) 0%, var(--green-900) 72%);
+  --grad-green-deep: linear-gradient(165deg, var(--green-800), var(--green-900));
+  --grad-gold: linear-gradient(135deg, var(--gold-soft) 0%, var(--gold) 46%, var(--gold-deep) 100%);
+  --grad-surface: linear-gradient(160deg, #ffffff 0%, var(--cream-card) 100%);
+  --shadow-sm: 0 1px 2px rgba(16, 32, 28, 0.04), 0 3px 10px rgba(16, 32, 28, 0.05);
+  --shadow-md: 0 4px 12px rgba(16, 32, 28, 0.06), 0 16px 36px rgba(16, 32, 28, 0.07);
+  --shadow-lg: 0 12px 26px rgba(16, 32, 28, 0.10), 0 34px 64px rgba(16, 32, 28, 0.10);
+  --shadow-green: 0 10px 24px rgba(10, 46, 36, 0.26);
+  --shadow-gold: 0 8px 22px rgba(200, 149, 42, 0.30);
+  --ring-gold: 0 0 0 3px rgba(217, 164, 65, 0.38);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(217, 164, 65, 0.28);
+  color: var(--green-900);
+}
+
+/* Softly textured backdrop instead of a flat fill */
+body {
+  background:
+    radial-gradient(78% 52% at 100% 0%, rgba(217, 164, 65, 0.07), transparent 60%),
+    radial-gradient(68% 48% at 0% 3%, rgba(36, 96, 74, 0.06), transparent 55%),
+    var(--cream);
+  background-attachment: fixed;
+}
+
+/* Elegant gold focus ring for keyboard users */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-gold);
+  border-radius: 9px;
+}
+
+/* ── Header: gradient + gold hairline ── */
+.site-header {
+  background: var(--grad-green-deep);
+  position: relative;
+}
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), rgba(217, 164, 65, 0) 58%);
+}
+.nav a {
+  transition: color 0.2s var(--ease);
+}
+.brand-mark {
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* ── Buttons: gradient fills, depth, hover lift ── */
+.btn {
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease),
+    background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.btn-primary {
+  background: var(--grad-green);
+  box-shadow: var(--shadow-green);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(10, 46, 36, 0.34);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-ghost-light:hover {
+  background: rgba(217, 164, 65, 0.12);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.btn-subtle {
+  background: var(--grad-surface);
+  box-shadow: var(--shadow-sm);
+}
+.btn-subtle:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(217, 164, 65, 0.5);
+}
+
+/* ── Surfaces: soft gradient + layered shadow ── */
+.panel,
+.marketing-panel,
+.kpi,
+.contact-panel {
+  background: var(--grad-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Card-style list items lift on hover */
+.episode-card,
+.episode-list-card,
+.flashcard-card {
+  background: var(--grad-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.24s var(--ease), box-shadow 0.24s var(--ease),
+    border-color 0.24s var(--ease);
+}
+.episode-card:hover,
+.episode-list-card:hover,
+.flashcard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(217, 164, 65, 0.42);
+}
+
+/* Gold KPI stat: rich gradient + corner glow */
+.kpi.gold {
+  background: var(--grad-green);
+  box-shadow: var(--shadow-green);
+  position: relative;
+  overflow: hidden;
+}
+.kpi.gold::after {
+  content: "";
+  position: absolute;
+  top: -42%;
+  right: -18%;
+  width: 170px;
+  height: 170px;
+  background: radial-gradient(circle, rgba(217, 164, 65, 0.24), transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Heroes: layered gradient depth + gold divider ── */
+.home-hero {
+  background:
+    radial-gradient(120% 130% at 85% -20%, rgba(217, 164, 65, 0.15), transparent 48%),
+    radial-gradient(96% 120% at -6% 122%, rgba(36, 96, 74, 0.5), transparent 52%),
+    var(--green-900);
+  position: relative;
+}
+.home-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  width: 54px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.hero {
+  background:
+    radial-gradient(120% 140% at 88% -12%, rgba(217, 164, 65, 0.16), transparent 46%),
+    radial-gradient(90% 120% at 0% 122%, rgba(36, 96, 74, 0.5), transparent 50%),
+    var(--green-900);
+}
+
+/* Status pills + smooth link hovers */
+.status-pill {
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .btn,
+  .episode-card,
+  .episode-list-card,
+  .flashcard-card {
+    transition: none;
+  }
+  .btn-primary:hover,
+  .btn-subtle:hover,
+  .btn-ghost-light:hover,
+  .episode-card:hover,
+  .episode-list-card:hover,
+  .flashcard-card:hover {
+    transform: none;
+  }
+}
