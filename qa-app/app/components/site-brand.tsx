@@ -18,7 +18,7 @@ export function SiteBrand({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="brand-logo" src="/mt-logo.png" alt="" width={size} height={size} />
       <span className={variant === "marketing-home" ? "brand-name brand-name-marketing" : "brand-name"}>
-        maritribeOne
+        maritribe<em className="brand-one">One</em>
       </span>
     </Link>
   );
