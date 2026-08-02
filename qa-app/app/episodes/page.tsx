@@ -3,9 +3,23 @@ import { PublicHeader } from "../components/public-header";
 import { PageHero } from "../components/page-hero";
 import { PublicFooter } from "../components/public-footer";
 import { EpisodeThumb } from "../components/episode-thumb";
-import { listenLinks, publishedEpisodes } from "@/lib/public-content";
+import { getEpisodeBySlug, listenLinks, publishedEpisodes } from "@/lib/public-content";
 
 const topics = Array.from(new Set(publishedEpisodes.map((episode) => episode.category)));
+
+/**
+ * The summary alone leaves the card thin. The detail entry already carries the
+ * guest's role and the chapter list, both of which say something useful about
+ * an episode before you open it.
+ */
+const cards = publishedEpisodes.map((episode) => {
+  const detail = getEpisodeBySlug(episode.slug);
+  return {
+    ...episode,
+    guestRole: detail?.guestRole ?? null,
+    chapterCount: detail?.chapters.length ?? 0,
+  };
+});
 
 export default function EpisodesPage() {
   return (
@@ -21,13 +35,33 @@ export default function EpisodesPage() {
       <main className="page-shell marketing-shell">
         <div className="wrap episodes-layout">
           <section className="episodes-list-panel" data-stagger>
-            {publishedEpisodes.map((episode) => (
+            {cards.map((episode) => (
               <Link
                 className="episode-list-card reveal"
                 key={episode.slug}
                 href={`/episodes/${episode.slug}`}
               >
-                <EpisodeThumb youtubeId={episode.youtubeId} number={episode.number} />
+                <div className="episode-list-media">
+                  <EpisodeThumb youtubeId={episode.youtubeId} number={episode.number} />
+
+                  {/* Fills the column under the 16:9 still, which is otherwise
+                      much shorter than the copy beside it. */}
+                  <div className="episode-list-foot">
+                    <p className="episode-guest-line">
+                      <span>{episode.author}</span>
+                      {episode.guestRole ? <em>{episode.guestRole}</em> : null}
+                    </p>
+                    <div className="episode-byline">
+                      {episode.chapterCount ? (
+                        <>
+                          <span>{episode.chapterCount} chapters</span>
+                          <span className="dot">·</span>
+                        </>
+                      ) : null}
+                      <span>{episode.date}</span>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="episode-list-copy">
                   <div className="episode-list-meta">
@@ -36,11 +70,6 @@ export default function EpisodesPage() {
                   </div>
                   <h2>{episode.title}</h2>
                   <p>{episode.excerpt}</p>
-                  <div className="episode-byline">
-                    <span>{episode.author}</span>
-                    <span className="dot">·</span>
-                    <span>{episode.date}</span>
-                  </div>
                 </div>
               </Link>
             ))}

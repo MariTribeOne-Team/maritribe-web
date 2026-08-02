@@ -11,14 +11,23 @@ function toSeconds(time: string): number {
   return parts[0] ?? 0;
 }
 
+/**
+ * Player, write-up and chapter rail share one grid: the article is passed in as
+ * `children` so it can stay a server component while sitting in the same column
+ * as the video. Without that the rail would be a lone grid sibling of the
+ * player and stretch the player card to its own height, leaving several hundred
+ * pixels of empty card below the video.
+ */
 export function EpisodePlayer({
   youtubeId,
   title,
   chapters,
+  children,
 }: {
   youtubeId?: string;
   title: string;
   chapters: EpisodeChapter[];
+  children?: React.ReactNode;
 }) {
   const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const [start, setStart] = useState<number | null>(null);
@@ -35,49 +44,53 @@ export function EpisodePlayer({
   };
 
   return (
-    <section className="episode-media">
-      <div className="episode-player-card">
-        {src ? (
-          <div className="episode-player-frame">
-            <iframe
-              // Remount on seek so the new start time takes effect.
-              key={start ?? "initial"}
-              src={src}
-              title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-        ) : (
-          <div className="episode-player-placeholder">
-            <span>Episode preview</span>
-            <p>
-              Media for this episode will appear here once the listening links and video are
-              attached.
-            </p>
-          </div>
-        )}
-        <div className="episode-player-foot">
-          <span>
-            {activeChapter !== null && chapters[activeChapter]
-              ? `Playing · ${chapters[activeChapter].label}`
-              : "Playing on maritribeOne · tap a chapter to jump"}
-          </span>
-          <div className="listen-links">
-            <a href={listenLinks.spotify} target="_blank" rel="noreferrer">
-              Spotify
-            </a>
-            <a
-              href={
-                youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : listenLinks.youtube
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              YouTube
-            </a>
+    <section className="episode-layout">
+      <div className="episode-column">
+        <div className="episode-player-card">
+          {src ? (
+            <div className="episode-player-frame">
+              <iframe
+                // Remount on seek so the new start time takes effect.
+                key={start ?? "initial"}
+                src={src}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="episode-player-placeholder">
+              <span>Episode preview</span>
+              <p>
+                Media for this episode will appear here once the listening links and video are
+                attached.
+              </p>
+            </div>
+          )}
+          <div className="episode-player-foot">
+            <span>
+              {activeChapter !== null && chapters[activeChapter]
+                ? `Playing · ${chapters[activeChapter].label}`
+                : "Playing on maritribeOne · tap a chapter to jump"}
+            </span>
+            <div className="listen-links">
+              <a href={listenLinks.spotify} target="_blank" rel="noreferrer">
+                Spotify
+              </a>
+              <a
+                href={
+                  youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : listenLinks.youtube
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                YouTube
+              </a>
+            </div>
           </div>
         </div>
+
+        {children}
       </div>
 
       <aside className="episode-chapters">

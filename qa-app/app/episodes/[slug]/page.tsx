@@ -89,9 +89,8 @@ export default async function EpisodeDetailPage({
             youtubeId={episode.youtubeId}
             title={episode.title}
             chapters={episode.chapters}
-          />
-
-          <article className="episode-article">
+          >
+            <article className="episode-article">
             <p className="episode-lead">{episode.lead}</p>
 
             {episode.intro.map((paragraph) => (
@@ -152,7 +151,8 @@ export default async function EpisodeDetailPage({
             ) : null}
 
             <p className="episode-closing">{episode.closing}</p>
-          </article>
+            </article>
+          </EpisodePlayer>
         </div>
       </main>
 

@@ -13,6 +13,9 @@ const dmSerif = DM_Serif_Display({
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
+  // Italic is loaded for the "One" in the wordmark — without it the browser
+  // synthesises a slanted roman, which looks wrong at the header's size.
+  style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-jakarta",
   display: "swap",
@@ -40,7 +43,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${dmSerif.variable} ${jakarta.variable}`}>
-      <body>
+      {/* Browser extensions (password managers, video-speed controllers) stamp
+          classes and attributes onto <body> before React hydrates, which reads
+          as a mismatch. Suppressing here covers this element only. */}
+      <body suppressHydrationWarning>
         {children}
         <ScrollMotion />
       </body>
