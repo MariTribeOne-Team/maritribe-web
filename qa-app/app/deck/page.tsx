@@ -24,7 +24,7 @@ export default async function DeckPage() {
   } catch {
     return (
       <>
-        <PublicHeader active="home" />
+        <PublicHeader active="none" />
         <QaBackendError title="Deck unavailable" message="The deck screen could not load cards from the QA backend." />
       </>
     );
@@ -34,7 +34,7 @@ export default async function DeckPage() {
 
   return (
     <>
-      <PublicHeader active="home" />
+      <PublicHeader active="none" />
       <PageHero overline="Deck" title="Maritime flashcards to study">
           <p style={{ color: "rgba(255,255,255,0.72)", maxWidth: 680, marginTop: 12 }}>
             Browse the current flashcard set, scan topics quickly, and open the reviewer workspace

@@ -64,7 +64,9 @@ export default function ContactPage() {
 
       <main className="contact-main">
         <div className="wrap">
-          <section className="hail-plate reveal" aria-labelledby="hail-heading">
+          {/* No scroll reveal here: this plate is the reason the page exists, so
+              it must be painted whether or not the observer has run. */}
+          <section className="hail-plate" aria-labelledby="hail-heading">
             <div className="hail-plate-inner">
               <p className="marketing-kicker hail-kicker" id="hail-heading">
                 Write to

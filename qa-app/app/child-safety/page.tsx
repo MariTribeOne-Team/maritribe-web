@@ -18,7 +18,7 @@ export default function ChildSafetyPage() {
 
   return (
     <>
-      <PublicHeader active="child-safety" />
+      <PublicHeader active="none" />
 
       <div className="hero">
         <div className="hero-inner">

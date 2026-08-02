@@ -22,7 +22,7 @@ const highlights = [
 export default function AccountPage() {
   return (
     <>
-      <PublicHeader active="account" />
+      <PublicHeader active="none" />
 
       <section className="hero-band">
         <div className="wrap">

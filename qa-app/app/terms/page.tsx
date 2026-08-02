@@ -43,7 +43,7 @@ const sections = [
 export default function TermsPage() {
   return (
     <>
-      <PublicHeader active="contact" />
+      <PublicHeader active="none" />
 
       <section className="support-hero support-hero-anchor">
         <div className="wrap support-hero-inner">

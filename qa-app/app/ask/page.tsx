@@ -15,7 +15,7 @@ export default async function AskPage() {
 
   return (
     <>
-      <PublicHeader active="home" />
+      <PublicHeader active="none" />
       <PageHero overline="Ask Preview" title="Grounded answers from the maritime deck" />
 
       <main className="page-shell">

@@ -1,16 +1,19 @@
 import Link from "next/link";
 
 export type PublicNavActive =
+  /** Pages that own a nav item. */
   | "home"
   | "episodes"
   | "contact"
-  | "account"
+  /** Editor-mode pages. */
   | "create-post"
   | "dashboard"
-  | "login"
   | "post"
-  | "guidelines"
-  | "child-safety";
+  /**
+   * Pages reachable from the footer or elsewhere but with no nav item of their
+   * own — nothing should light up while you are on them.
+   */
+  | "none";
 
 /**
  * One public nav for every marketing page, so the header is identical on the

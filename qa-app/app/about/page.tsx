@@ -34,7 +34,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <PublicHeader active="home" />
+      <PublicHeader active="none" />
       <PageHero overline="About" title="The person and the curiosity behind maritribeOne">
         <p className="marketing-hero-copy">
           This route replaces the old standalone About page and keeps the public-side story inside

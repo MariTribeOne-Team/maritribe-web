@@ -19,7 +19,7 @@ export default function GuidelinesPage() {
 
   return (
     <>
-      <PublicHeader active="guidelines" />
+      <PublicHeader active="none" />
 
       <div className="hero">
         <div className="hero-inner">

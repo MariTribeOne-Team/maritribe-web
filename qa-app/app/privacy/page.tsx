@@ -44,7 +44,7 @@ const sections = [
 export default function PrivacyPage() {
   return (
     <>
-      <PublicHeader active="contact" />
+      <PublicHeader active="none" />
 
       <section className="support-hero support-hero-lock">
         <div className="wrap support-hero-inner">
