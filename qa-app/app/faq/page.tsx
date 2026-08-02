@@ -5,7 +5,8 @@ import { faqDeleteCard, faqGroups, faqHero, faqIntro } from "@/lib/faq-content";
 
 export const metadata: Metadata = {
   title: "FAQ — maritribeOne",
-  description: faqIntro,
+  description:
+    "Answers on privacy, communities, direct messaging, posting, and moderation for the MaritribeOne alumni network.",
 };
 
 export default function FaqPage() {

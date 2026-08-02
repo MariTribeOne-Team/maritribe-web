@@ -1399,6 +1399,8 @@ button.episode-chapter-btn.active {
 .support-section {
   overflow: hidden;
   margin-bottom: 28px;
+  /* Clear the sticky header when a table-of-contents link jumps here. */
+  scroll-margin-top: 88px;
 }
 
 .support-section-header {
