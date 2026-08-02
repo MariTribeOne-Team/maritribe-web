@@ -2,12 +2,15 @@ import Link from "next/link";
 import { PublicHeader } from "../components/public-header";
 import { PageHero } from "../components/page-hero";
 import { PublicFooter } from "../components/public-footer";
-import { episodeSummaries } from "@/lib/public-content";
+import { EpisodeThumb } from "../components/episode-thumb";
+import { listenLinks, publishedEpisodes } from "@/lib/public-content";
+
+const topics = Array.from(new Set(publishedEpisodes.map((episode) => episode.category)));
 
 export default function EpisodesPage() {
   return (
     <>
-      <PublicHeader active="episodes" mode="marketing" />
+      <PublicHeader active="episodes" />
       <PageHero overline="The Podcast" title="All Episodes">
         <p className="marketing-hero-copy">
           Honest conversations with maritime leaders, technologists, operators, and government
@@ -17,17 +20,14 @@ export default function EpisodesPage() {
 
       <main className="page-shell marketing-shell">
         <div className="wrap episodes-layout">
-          <section className="episodes-list-panel">
-            {episodeSummaries.map((episode) => (
+          <section className="episodes-list-panel" data-stagger>
+            {publishedEpisodes.map((episode) => (
               <Link
-                className="episode-list-card"
+                className="episode-list-card reveal"
                 key={episode.slug}
                 href={`/episodes/${episode.slug}`}
               >
-                <div className="episode-list-thumb">
-                  <span className="episode-play">▶</span>
-                  <span className="episode-number">{episode.number}</span>
-                </div>
+                <EpisodeThumb youtubeId={episode.youtubeId} number={episode.number} />
 
                 <div className="episode-list-copy">
                   <div className="episode-list-meta">
@@ -47,24 +47,27 @@ export default function EpisodesPage() {
           </section>
 
           <aside className="episodes-sidebar">
-            <section className="marketing-panel sidebar-block">
+            <section className="marketing-panel sidebar-block reveal">
               <p className="marketing-kicker">Listen on</p>
               <div className="listen-links">
-                <a href="#">Spotify</a>
-                <a href="#">Apple Podcasts</a>
-                <a href="#">YouTube</a>
+                <a href={listenLinks.spotify} target="_blank" rel="noreferrer">
+                  Spotify
+                </a>
+                <a href={listenLinks.youtube} target="_blank" rel="noreferrer">
+                  YouTube
+                </a>
               </div>
             </section>
 
-            <section className="marketing-panel sidebar-block">
+            <section className="marketing-panel sidebar-block reveal">
               <p className="marketing-kicker">Topics</p>
               <div className="topic-pills">
                 <span className="status-pill">All</span>
-                <span className="status-pill">Regulation</span>
-                <span className="status-pill">Training</span>
-                <span className="status-pill">Technology</span>
-                <span className="status-pill">Welfare</span>
-                <span className="status-pill">Green Shipping</span>
+                {topics.map((topic) => (
+                  <span className="status-pill" key={topic}>
+                    {topic}
+                  </span>
+                ))}
               </div>
             </section>
           </aside>

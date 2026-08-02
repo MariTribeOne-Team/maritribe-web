@@ -1,35 +1,21 @@
-import { PublicNav } from "../public-nav";
+import { PublicNav, type PublicNavActive } from "../public-nav";
 import { SiteBrand } from "./site-brand";
 
-export async function PublicHeader({
+/**
+ * The single public header. Every marketing page renders it identically to the
+ * homepage — same brand mark, same nav, same full-bleed bar.
+ */
+export function PublicHeader({
   active,
-  mode = "study",
-  layout = "contained",
-  brandVariant = "default",
+  mode = "marketing",
 }: {
-  active:
-    | "deck"
-    | "ask"
-    | "qa"
-    | "home"
-    | "about"
-    | "episodes"
-    | "contact"
-    | "account"
-    | "create-post"
-    | "dashboard"
-    | "login"
-    | "post"
-    | "guidelines"
-    | "child-safety";
-  mode?: "study" | "marketing" | "marketing-home" | "editor";
-  layout?: "contained" | "full";
-  brandVariant?: "default" | "marketing-home";
+  active: PublicNavActive;
+  mode?: "marketing" | "editor";
 }) {
   return (
-    <header className={layout === "full" ? "site-header site-header-full" : "site-header"}>
-      <div className={layout === "full" ? "wrap wrap-full" : "wrap"}>
-        <SiteBrand variant={brandVariant} />
+    <header className="site-header site-header-full">
+      <div className="wrap wrap-full">
+        <SiteBrand variant="marketing-home" />
         <PublicNav active={active} mode={mode} />
       </div>
     </header>

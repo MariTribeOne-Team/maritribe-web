@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { PublicHeader } from "../components/public-header";
 import { PageHero } from "../components/page-hero";
 import { PublicFooter } from "../components/public-footer";
@@ -21,10 +22,19 @@ const timeline = [
   },
 ];
 
+/**
+ * Route withheld. `/about` is not part of the current public site: it is unlinked
+ * from the nav and footer, and returns 404 so it cannot be reached or indexed.
+ * Flip this to `true` (and re-add the nav/footer links) to bring the page back.
+ */
+const ROUTE_ENABLED = false;
+
 export default function AboutPage() {
+  if (!ROUTE_ENABLED) notFound();
+
   return (
     <>
-      <PublicHeader active="about" mode="marketing" />
+      <PublicHeader active="none" />
       <PageHero overline="About" title="The person and the curiosity behind maritribeOne">
         <p className="marketing-hero-copy">
           This route replaces the old standalone About page and keeps the public-side story inside

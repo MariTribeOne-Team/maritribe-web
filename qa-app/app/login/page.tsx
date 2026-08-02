@@ -14,7 +14,8 @@ export default async function LoginPage({
       <section className="login-brand">
         <div>
           <Link href="/" className="login-brand-top">
-            <span className="brand-mark brand-mark-login">M</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="brand-logo brand-logo-login" src="/mt-logo.png" alt="" width={44} height={44} />
             <span className="brand-name brand-name-login">maritribeOne</span>
           </Link>
         </div>
@@ -47,7 +48,8 @@ export default async function LoginPage({
       <section className="login-main">
         <div className="login-card">
           <Link href="/" className="login-logo">
-            <span className="brand-mark brand-mark-login">M</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="brand-logo brand-logo-login" src="/mt-logo.png" alt="" width={44} height={44} />
             <span className="brand-name brand-name-login">maritribeOne</span>
           </Link>
 

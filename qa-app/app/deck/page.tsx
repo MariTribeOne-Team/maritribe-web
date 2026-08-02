@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { readDeckFromBackend } from "@/lib/qa-backend";
 import { QaBackendError } from "../qa/backend-error";
 import Link from "next/link";
@@ -5,7 +6,16 @@ import { readQaSession } from "@/lib/session";
 import { PublicHeader } from "../components/public-header";
 import { PageHero } from "../components/page-hero";
 
+/**
+ * Route withheld. `/deck` is an internal preview of the flashcard set, not part
+ * of the current public site: unlinked from every nav and CTA, and returns 404
+ * so it cannot be reached or indexed. Flip this to `true` to bring it back.
+ */
+const ROUTE_ENABLED = false;
+
 export default async function DeckPage() {
+  if (!ROUTE_ENABLED) notFound();
+
   const qaSession = await readQaSession();
   const qaHref = qaSession ? "/qa/review-queue" : "/qa/login";
   let deck;
@@ -14,7 +24,7 @@ export default async function DeckPage() {
   } catch {
     return (
       <>
-        <PublicHeader active="deck" />
+        <PublicHeader active="none" />
         <QaBackendError title="Deck unavailable" message="The deck screen could not load cards from the QA backend." />
       </>
     );
@@ -24,7 +34,7 @@ export default async function DeckPage() {
 
   return (
     <>
-      <PublicHeader active="deck" />
+      <PublicHeader active="none" />
       <PageHero overline="Deck" title="Maritime flashcards to study">
           <p style={{ color: "rgba(255,255,255,0.72)", maxWidth: 680, marginTop: 12 }}>
             Browse the current flashcard set, scan topics quickly, and open the reviewer workspace

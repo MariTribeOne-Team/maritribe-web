@@ -1,56 +1,42 @@
 import Link from "next/link";
-import { readQaSession } from "@/lib/session";
 
-export async function PublicNav({
+export type PublicNavActive =
+  /** Pages that own a nav item. */
+  | "home"
+  | "episodes"
+  | "contact"
+  /** Editor-mode pages. */
+  | "create-post"
+  | "dashboard"
+  | "post"
+  /**
+   * Pages reachable from the footer or elsewhere but with no nav item of their
+   * own — nothing should light up while you are on them.
+   */
+  | "none";
+
+/**
+ * One public nav for every marketing page, so the header is identical on the
+ * homepage and everywhere else. `/about`, `/deck` and `/ask` are intentionally
+ * absent — those routes are currently withheld (see their page files).
+ */
+export function PublicNav({
   active,
-  mode = "study",
+  mode = "marketing",
 }: {
-  active:
-    | "deck"
-    | "ask"
-    | "qa"
-    | "home"
-    | "about"
-    | "episodes"
-    | "contact"
-    | "account"
-    | "create-post"
-    | "dashboard"
-    | "login"
-    | "post"
-    | "guidelines"
-    | "child-safety";
-  mode?: "study" | "marketing" | "marketing-home" | "editor";
+  active: PublicNavActive;
+  mode?: "marketing" | "editor";
 }) {
-  const qaSession = await readQaSession();
-  const qaHref = qaSession ? "/qa/review-queue" : "/qa/login";
-
-  if (mode === "marketing-home") {
-    return (
-      <nav className="nav nav-marketing">
-        <Link href="/" className={active === "home" ? "active" : undefined}>Home</Link>
-        <Link href="/episodes" className={active === "episodes" ? "active" : undefined}>Episodes</Link>
-        <Link href="/contact" className={active === "contact" ? "active" : undefined}>Contact</Link>
-      </nav>
-    );
-  }
-
-  if (mode === "marketing") {
-    return (
-      <nav className="nav nav-marketing">
-        <Link href="/" className={active === "home" ? "active" : undefined}>Home</Link>
-        <Link href="/about" className={active === "about" ? "active" : undefined}>About</Link>
-        <Link href="/episodes" className={active === "episodes" ? "active" : undefined}>Episodes</Link>
-        <Link href="/contact" className={active === "contact" ? "active" : undefined}>Contact</Link>
-      </nav>
-    );
-  }
-
   if (mode === "editor") {
     return (
       <nav className="nav nav-marketing">
-        <Link href="/" className={active === "home" ? "active" : undefined}>Home</Link>
-        <Link href="/episodes" className={active === "episodes" || active === "post" ? "active" : undefined}>
+        <Link href="/" className={active === "home" ? "active" : undefined}>
+          Home
+        </Link>
+        <Link
+          href="/episodes"
+          className={active === "episodes" || active === "post" ? "active" : undefined}
+        >
           Episodes
         </Link>
         <Link href="/create-post" className={active === "create-post" ? "active" : undefined}>
@@ -64,10 +50,16 @@ export async function PublicNav({
   }
 
   return (
-    <nav className="nav">
-      <Link href="/deck" className={active === "deck" ? "active" : undefined}>Deck</Link>
-      <Link href="/ask" className={active === "ask" ? "active" : undefined}>Ask</Link>
-      <Link href={qaHref} className={active === "qa" ? "active" : undefined}>QA</Link>
+    <nav className="nav nav-marketing">
+      <Link href="/" className={active === "home" ? "active" : undefined}>
+        Home
+      </Link>
+      <Link href="/episodes" className={active === "episodes" ? "active" : undefined}>
+        Episodes
+      </Link>
+      <Link href="/contact" className={active === "contact" ? "active" : undefined}>
+        Contact
+      </Link>
     </nav>
   );
 }

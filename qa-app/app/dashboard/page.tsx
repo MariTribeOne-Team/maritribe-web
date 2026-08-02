@@ -20,8 +20,8 @@ const bars = [
 
 const topPages = [
   ["/episodes/twenty-years-regulatory-side-indian-shipping", "342"],
-  ["/episodes/methanol-ammonia-hydrogen-right-fuel", "215"],
-  ["/about", "166"],
+  ["/episodes/from-the-bridge-to-the-algorithm", "215"],
+  ["/episodes/forty-years-of-not-looking-away", "166"],
   ["/episodes", "149"],
 ];
 
