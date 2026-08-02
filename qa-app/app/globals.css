@@ -1238,21 +1238,54 @@ button.episode-chapter-btn.active {
 }
 
 .faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   cursor: pointer;
   list-style: none;
   padding: 18px 20px;
   color: var(--ink);
   font-size: 14px;
   font-weight: 700;
+  transition: color 0.18s var(--ease, ease);
+}
+
+.faq-item summary:hover {
+  color: #551841;
 }
 
 .faq-item summary::-webkit-details-marker {
   display: none;
 }
 
+/* Chevron that rotates when the answer opens. */
+.faq-item summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.22s var(--ease, ease);
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.faq-item[open] summary {
+  color: #551841;
+}
+
 .faq-answer {
   border-top: 1px solid var(--line);
   padding: 14px 20px 18px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.75;
 }
 
 .faq-answer p {
@@ -1260,6 +1293,70 @@ button.episode-chapter-btn.active {
   color: var(--ink-soft);
   font-size: 14px;
   line-height: 1.75;
+}
+
+.faq-answer ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.faq-answer li {
+  margin-bottom: 8px;
+}
+
+.faq-answer li:last-child {
+  margin-bottom: 0;
+}
+
+.faq-answer li::marker {
+  color: #551841;
+}
+
+.faq-answer strong {
+  color: var(--ink);
+}
+
+.faq-delete-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: 8px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.faq-delete-title {
+  margin: 0 0 3px;
+  color: #374151;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.faq-delete-desc {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--text-secondary, #6b7280);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.faq-delete-link {
+  color: #551841;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item summary::after {
+    transition: none;
+  }
 }
 
 .support-toc {
@@ -1347,6 +1444,131 @@ button.episode-chapter-btn.active {
 
 .support-section-body p:last-child {
   margin-bottom: 0;
+}
+
+/* --- Ported legal documents (privacy, terms) ------------------------------ */
+.support-section-body a {
+  color: #551841;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-list {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.legal-list li {
+  margin-bottom: 6px;
+}
+
+.legal-list li::marker {
+  color: #551841;
+}
+
+.legal-list:last-child {
+  margin-bottom: 0;
+}
+
+.legal-sub {
+  margin: 0 0 20px;
+  padding-left: 16px;
+  border-left: 2px solid var(--line);
+}
+
+.legal-sub:last-child {
+  margin-bottom: 0;
+}
+
+.legal-sub-label {
+  margin: 0 0 8px !important;
+  color: var(--green-900) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Statutory all-caps clauses (disclaimers, liability limits). */
+.legal-caps {
+  margin: 0 0 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  color: var(--ink-soft) !important;
+  font-size: 12.5px !important;
+  line-height: 1.75 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.legal-grievance {
+  margin: 6px 0 0;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #551841, #0f4a3c);
+  color: #fff;
+}
+
+.legal-grievance p {
+  margin: 0 !important;
+  color: #fff !important;
+}
+
+.legal-grievance-label {
+  color: rgba(255, 255, 255, 0.62) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px !important;
+}
+
+.legal-grievance-name {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+.legal-grievance-contact {
+  margin-top: 6px !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+
+.legal-grievance-contact a {
+  color: var(--gold-soft) !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.legal-grievance-contact a:hover {
+  text-decoration: underline;
+}
+
+.legal-grievance-timings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  list-style: none;
+}
+
+.legal-grievance-timings li {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .support-toc-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .login-shell {
@@ -3388,6 +3610,82 @@ body::after {
     animation: none;
   }
   body::after { display: none; }
+}
+
+/* ==========================================================================
+   404
+   ========================================================================== */
+
+.notfound {
+  position: relative;
+  overflow: hidden;
+  min-height: 62vh;
+  display: grid;
+  align-items: center;
+  padding: 80px 0 96px;
+  color: #fff;
+  background:
+    radial-gradient(120% 130% at 85% -20%, rgba(217, 164, 65, 0.15), transparent 48%),
+    radial-gradient(96% 120% at -6% 122%, rgba(36, 96, 74, 0.5), transparent 52%),
+    var(--green-900);
+}
+
+.notfound-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+}
+
+/* Oversized ghost numeral behind the copy. */
+.notfound-code {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-52%);
+  z-index: -1;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-marketing-serif);
+  font-size: clamp(150px, 26vw, 300px);
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
+
+.notfound-inner h1 {
+  margin: 0;
+  font-family: var(--font-marketing-serif);
+  font-weight: 400;
+  font-size: clamp(34px, 5.4vw, 56px);
+  line-height: 1.1;
+  animation: mt-fade-up 0.7s var(--ease, ease) both;
+  animation-delay: 0.1s;
+}
+
+.notfound-copy {
+  margin: 22px 0 32px;
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
+  line-height: 1.7;
+  animation: mt-fade-up 0.7s var(--ease, ease) both;
+  animation-delay: 0.24s;
+}
+
+.notfound-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  animation: mt-fade-up 0.7s var(--ease, ease) both;
+  animation-delay: 0.36s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notfound-inner h1,
+  .notfound-copy,
+  .notfound-actions {
+    animation: none;
+  }
 }
 
 /* ==========================================================================

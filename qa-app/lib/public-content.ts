@@ -182,37 +182,96 @@ const khatriDetail: EpisodeDetail = {
     "What candidates are quietly paying agents just to get hired, and why nobody puts it in writing",
     "How one process change cut exam results from three months to two weeks",
     "Why he thinks the wrong people often end up doing the teaching",
+    "The story of the day he grounded a fully loaded container ship, on a simulator, in front of an audience",
+    "What he'd fix first if handed a blank slate for ratings training, and why it isn't the technology",
   ],
   takeaways: [
     {
       number: "01",
       title: "The most abused rule on a ship isn't broken out of malice.",
       body:
-        "Rest hour requirements under STCW and MLC are, in Capt. Khatri's words, the most difficult and most abused regulation at sea. The reason isn't intent, it's structural: reduced manning and modern ship design leave no real room to comply.",
+        "Rest hour requirements under STCW and MLC are, in Capt. Khatri's words, the most difficult and most abused regulation at sea. The reason isn't intent, it's structural. Reduced manning and modern ship design leave no real room to comply, while owners still need to satisfy the matrix or face port state detention. “It beats my heart that seafarers are getting exploited,” he said. “The owners don't want to give that additional manpower.”",
     },
     {
       number: "02",
       title: "The Board of Examination for Seafarers exists because the directorate couldn't keep up.",
       body:
-        "Formed in 2005, BES took on GP rating exit examinations delegated from DG Shipping and now examines thousands of candidates every cycle.",
+        "Formed in 2005 by the Company of Master Mariners of India and the Institute of Marine Engineers of India, BES took on GP rating exit examinations delegated from DG Shipping. It now examines over 10,000 candidates a year, roughly 5,000 fresh candidates and 1,000 repeaters every six-month cycle.",
     },
     {
       number: "03",
-      title: "Passing the exam is not the same as being vessel ready.",
+      title: "More than 50 institutes train GP ratings, and many never aim for employability.",
       body:
-        "Capt. Khatri put the number of truly ship-ready candidates at only around 30 to 35 percent on the day they clear the exam.",
+        "Capt. Khatri's clearest frustration is here. Training institutes take fees for a six-month course and treat passing the exam as the finish line, not getting the candidate hired. About 20 percent of candidates fail their first attempt, and across all seven permitted attempts the pass rate still sits below 35 percent.",
     },
     {
       number: "04",
-      title: "The placement fee problem is real and mostly invisible.",
+      title: "Failure is expensive and lonely.",
       body:
-        "Candidates often pay agents large unofficial fees just to secure their first ship, even after already spending heavily on training.",
+        "A candidate has typically already spent around three lakh rupees on training by the time he fails. After that he's on his own, with no institute support and no local exam centre, just a long trip back to a major city to try again. BES is building a free online learning system to close part of that gap.",
     },
     {
       number: "05",
-      title: "Digitising the exam process closed a major exploitation gap.",
+      title: "Even passing doesn't mean ready.",
       body:
-        "A QR-code-based online process now puts certificates directly into the candidate's portal and reduced result timelines from months to weeks.",
+        "Asked what share of the roughly 1.25 lakh candidates examined over the trust's lifetime were genuinely vessel ready the day they cleared their exam, Capt. Khatri put the number at no more than 30 to 35 percent. The rest, in his words, went through a show of training, with the fee collected regardless of the outcome.",
+    },
+    {
+      number: "06",
+      title: "His fix: make institutes own the outcome, not just the fee.",
+      body:
+        "If given the power to change one thing in ratings training starting tomorrow, he wouldn't touch the syllabus. He'd make it mandatory for institutes to bring real employers into training on a regular basis, and hold those employers responsible for placement once training ends. He'd also put the cost of retraining a failed candidate on the institute, not the candidate.",
+    },
+    {
+      number: "07",
+      title: "Teaching often isn't anyone's first choice, and it shows.",
+      body:
+        "He compared maritime training institutes to defence academies like the NDA, where instructors are selected for excellence and treated as role models. In ratings training, teaching is too often the job people take only after failing to find anything else.",
+    },
+    {
+      number: "08",
+      title:
+        "Ratings have almost no visible career path, and the NCV bridge is the attempt to fix that.",
+      body:
+        "Compared to officers, ratings have little voice and little progression. The NCV (near coastal voyage) pathway lets a GP rating candidate enter a structured 12-month training programme and progress to NCV Watchkeeping Officer, giving ratings a real bridge upward rather than a ceiling.",
+    },
+    {
+      number: "09",
+      title: "The placement fee nobody writes down.",
+      body:
+        "Beyond training, candidates separately pay agents three to five lakh rupees just to secure a ship, even at established companies. The money isn't on any contract, and candidates who don't pay simply don't get selected. “It is utter madness,” he said.",
+    },
+    {
+      number: "10",
+      title: "He reads a candidate in the first thirty seconds.",
+      body:
+        "Capt. Khatri's go-to technique in an oral exam is to put the candidate on a voyage he's actually sailed, walking through loading, documentation, weather, and emergencies on his own ship. He's had candidates correct him mid-exam, and once had a candidate faint from exhaustion before the questioning even properly began, a reminder of how long these boys wait, hungry and anxious, before they're called in.",
+    },
+    {
+      number: "11",
+      title:
+        "He grounded a ship, on a simulator, in front of the institute that invited him to admire it.",
+      body:
+        "Visiting a top-of-the-line bridge simulator in Chennai, Capt. Khatri took the con on a fully loaded container ship entering harbour, overestimated his own twenty years of command experience, and ran the ship aground. “I let go anchors because of complete overconfidence and being unprepared,” he said. “I failed. Good one. I failed.”",
+    },
+    {
+      number: "12",
+      title:
+        "Digitising the exam process closed an exploitation gap that manual processing created.",
+      body:
+        "Before digitisation, training institutes controlled when a passing candidate received his certificate, something Capt. Khatri was candid about as a source of exploitation. The new system gives candidates an admit card with a QR code, runs the exam online, and puts the certificate directly into the candidate's portal. Results that used to take two to three months now take two weeks.",
+    },
+    {
+      number: "13",
+      title: "He's cautious about loading AI into the syllabus just because it's available.",
+      body:
+        "With STCW amendments already adding cyber security, alternative fuels, and mental health training, he's wary of adding AI literacy on top without removing something else. His view is narrower than the industry's enthusiasm suggests: seafarers need to know how to operate AI-enabled equipment on board, not necessarily study AI as a subject in its own right.",
+    },
+    {
+      number: "14",
+      title: "If he got an innovation sandbox tomorrow, he wouldn't start with ship financing.",
+      body:
+        "Asked what problem he'd want startups and regulators to solve first, he didn't pick a technology gap. He picked exploitation at the lowest rank, the same thread that runs through training fees and agent fees alike. “Make that seafarer feel happy doing his job,” he said. “Make him passionate about his job.”",
     },
   ],
   references: [
@@ -220,7 +279,11 @@ const khatriDetail: EpisodeDetail = {
     "MLC, 2006",
     "DG Shipping, Government of India",
     "Board of Examination for Seafarers",
+    "Company of Master Mariners of India",
+    "Institute of Marine Engineers (India)",
     "IMO HTW Sub-Committee",
+    "Inland Vessels Act, 2021",
+    "Maharashtra Maritime Board",
   ],
   find: [{ label: "LinkedIn" }, { label: "BES website" }],
   closing:
@@ -229,9 +292,20 @@ const khatriDetail: EpisodeDetail = {
     { time: "00:00", label: "Intro: seafarers are getting exploited" },
     { time: "01:08", label: "The rest hour rule nobody can fully follow" },
     { time: "02:16", label: "What the Board of Examination actually does" },
+    { time: "03:36", label: "The employability problem in GP rating training" },
     { time: "05:32", label: "What failure actually costs a candidate" },
+    { time: "06:08", label: "Why only a third are vessel ready" },
+    { time: "07:07", label: "The fix: make institutes own the outcome" },
+    { time: "08:19", label: "Ratings progression and the NCV pipeline" },
+    { time: "09:40", label: "The agent fee problem" },
     { time: "10:23", label: "How an examiner prepares for an oral exam" },
+    { time: "13:04", label: "The candidate who fainted mid-exam" },
+    { time: "14:26", label: "The simulator grounding, his own story" },
+    { time: "16:23", label: "The 92-year-old who wanted a skipper's licence" },
     { time: "18:22", label: "Digitising India's seafarer examinations" },
+    { time: "21:40", label: "Should AI be part of the syllabus" },
+    { time: "22:54", label: "Bringing rigour to inland waterways" },
+    { time: "24:41", label: "What he'd fix first in an innovation sandbox" },
     { time: "25:35", label: "From a Lucknow boy who failed the NDA twice" },
   ],
 };
