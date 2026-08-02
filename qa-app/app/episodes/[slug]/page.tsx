@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { PublicHeader } from "../../components/public-header";
 import { PublicFooter } from "../../components/public-footer";
 import { EpisodePlayer } from "./episode-player";
-import { getEpisodeBySlug, episodeSummaries } from "@/lib/public-content";
+import { EpisodeThumb } from "../../components/episode-thumb";
+import { getEpisodeBySlug, publishedEpisodes } from "@/lib/public-content";
 
 export function generateStaticParams() {
-  return episodeSummaries.map((episode) => ({ slug: episode.slug }));
+  return publishedEpisodes.map((episode) => ({ slug: episode.slug }));
 }
 
 export async function generateMetadata({
@@ -57,11 +58,12 @@ export default async function EpisodeDetailPage({
     notFound();
   }
 
-  const related = episodeSummaries.filter((item) => item.slug !== episode.slug).slice(0, 4);
+  // Only published episodes are ever surfaced here.
+  const related = publishedEpisodes.filter((item) => item.slug !== episode.slug).slice(0, 4);
 
   return (
     <>
-      <PublicHeader active="episodes" mode="marketing" />
+      <PublicHeader active="episodes" />
 
       <section className="episode-hero">
         <div className="wrap episode-hero-inner">
@@ -162,12 +164,14 @@ export default async function EpisodeDetailPage({
             <p>Honest conversations with the people who actually run the maritime world.</p>
           </div>
 
-          <div className="related-grid">
+          <div className="related-grid" data-stagger>
             {related.map((item) => (
-              <Link href={`/episodes/${item.slug}`} className="related-card" key={item.slug}>
-                <div className="related-thumb">
-                  <span>{item.number}</span>
-                </div>
+              <Link
+                href={`/episodes/${item.slug}`}
+                className="related-card reveal"
+                key={item.slug}
+              >
+                <EpisodeThumb youtubeId={item.youtubeId} number={item.number} size="small" />
                 <div className="related-body">
                   <span className="status-pill">{item.category}</span>
                   <h3>{item.title}</h3>

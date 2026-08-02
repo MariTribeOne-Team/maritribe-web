@@ -14,7 +14,6 @@ export function PublicFooter() {
           <div>
             <p className="public-footer-heading">Explore</p>
             <Link href="/">Home</Link>
-            <Link href="/about">About</Link>
             <Link href="/episodes">Episodes</Link>
             <Link href="/contact">Contact</Link>
           </div>

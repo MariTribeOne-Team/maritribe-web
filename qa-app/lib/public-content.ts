@@ -7,6 +7,14 @@ export type EpisodeSummary = {
   excerpt: string;
   author: string;
   date: string;
+  /**
+   * Only published episodes are listed, linked, or reachable by URL. Drafts stay
+   * in this file so a future episode goes live by flipping this one flag (plus
+   * attaching its detail entry below).
+   */
+  published: boolean;
+  /** Drives the card artwork (YouTube still) on listing and "keep listening" cards. */
+  youtubeId?: string;
 };
 
 export type EpisodeChapter = {
@@ -38,12 +46,20 @@ export type EpisodeDetail = EpisodeSummary & {
   chapters: EpisodeChapter[];
 };
 
+/** Where the show is distributed. Used by every "Listen on" surface. */
+export const listenLinks = {
+  spotify: "https://open.spotify.com/show/033mbKv7c9OTU75hbhT29m",
+  youtube: "https://www.youtube.com/@maritribeOnePodcast",
+} as const;
+
 export const episodeSummaries: EpisodeSummary[] = [
   {
     slug: "twenty-years-regulatory-side-indian-shipping",
     number: "EP 01",
     category: "Regulation",
     duration: "26 min",
+    published: true,
+    youtubeId: "_xRXKorM7yk",
     title:
       "Twenty years on the regulatory side of Indian shipping: what an examiner sees that nobody else does",
     excerpt:
@@ -56,6 +72,8 @@ export const episodeSummaries: EpisodeSummary[] = [
     number: "EP 02",
     category: "Voyage Optimization",
     duration: "36 min",
+    published: true,
+    youtubeId: "7gQ5WjTENzI",
     title:
       "From the bridge to the algorithm: a tanker Master on what voyage optimization actually is, and why the industry keeps getting it wrong",
     excerpt:
@@ -64,10 +82,29 @@ export const episodeSummaries: EpisodeSummary[] = [
     date: "June 6, 2026",
   },
   {
-    slug: "automation-paradoxes-indias-largest-container-terminal",
+    slug: "forty-years-of-not-looking-away",
     number: "EP 03",
+    category: "Leadership",
+    duration: "50 min",
+    published: true,
+    youtubeId: "JlIkUYHsnYY",
+    title: "Forty years of not looking away",
+    excerpt:
+      "Only five to ten percent of the world's seventy-five thousand vessels transmit auto log data. The rest still runs on Excel, email, and memory. Forty years in, the President of the Institute of Marine Engineers India explains why the data problem is really a people problem.",
+    author: "Kaushik Kumar Seal",
+    date: "June 3, 2026",
+  },
+
+  // ---------------------------------------------------------------------------
+  // Drafts. Not listed, not linked, not reachable by URL. To publish one: attach
+  // a detail entry to `episodeDetails` below, then set `published: true`.
+  // ---------------------------------------------------------------------------
+  {
+    slug: "automation-paradoxes-indias-largest-container-terminal",
+    number: "EP 04",
     category: "Technology",
     duration: "31 min",
+    published: false,
     title:
       "The port that moved faster by standing still: automation paradoxes at India's largest container terminal",
     excerpt:
@@ -77,9 +114,10 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "methanol-ammonia-hydrogen-right-fuel",
-    number: "EP 04",
+    number: "EP 05",
     category: "Green Shipping",
     duration: "34 min",
+    published: false,
     title:
       "Methanol, ammonia, or hydrogen: how do you bet on the right fuel when the rules aren't written yet?",
     excerpt:
@@ -89,9 +127,10 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "seafarers-mind-welfare-work",
-    number: "EP 05",
+    number: "EP 06",
     category: "Welfare",
     duration: "29 min",
+    published: false,
     title:
       "The seafarer's mind: two decades of welfare work and what the industry still won't talk about",
     excerpt:
@@ -101,9 +140,10 @@ export const episodeSummaries: EpisodeSummary[] = [
   },
   {
     slug: "crewing-the-future-india-maritime-workforce",
-    number: "EP 06",
+    number: "EP 07",
     category: "Training",
     duration: "38 min",
+    published: false,
     title:
       "Crewing the future: where India's maritime workforce strategy is heading next",
     excerpt:
@@ -112,6 +152,11 @@ export const episodeSummaries: EpisodeSummary[] = [
     date: "May 13, 2026",
   },
 ];
+
+/** The only episodes any public surface should ever render. */
+export const publishedEpisodes: EpisodeSummary[] = episodeSummaries.filter(
+  (episode) => episode.published,
+);
 
 function summaryOf(slug: string): EpisodeSummary {
   const summary = episodeSummaries.find((episode) => episode.slug === slug);
@@ -331,20 +376,165 @@ const bhatiaDetail: EpisodeDetail = {
   ],
 };
 
+const sealDetail: EpisodeDetail = {
+  ...summaryOf("forty-years-of-not-looking-away"),
+  guestRole: "President, Institute of Marine Engineers India",
+  youtubeId: "JlIkUYHsnYY",
+  lead:
+    "Only five to ten percent of the world's seventy-five thousand vessels transmit auto log data. The rest still runs on Excel, email, and memory. Kaushik Kumar Seal has spent a decade trying to close that gap, and a career of forty years learning why the data problem is really a people problem.",
+  intro: [
+    "Kaushik Kumar Seal trained at DMET Kolkata, sailed as Chief Engineer on some of the most demanding vessels in service, surveyed and inspected ships for Lloyd Register, managed environmental compliance for four hundred vessels at Anglo Eastern, made safety cases for heavy lift semi-submersible ships at Dockwise, optimised fleets from Singapore, and built IMEI's first international chapter before returning to Mumbai to lead the Institute of Marine Engineers India as its President. In this conversation with Shankar, he traces that arc from the inside out: the surveyor who got badly burnt in a boiler Kaushik had warned him about, the chief engineer detained for five to six days after insisting everything was fine, and the one piece of advice from his father, a Princeton-educated statistician in the Indian civil service, that has shaped every professional decision since.",
+  ],
+  learn: [
+    "The difference between a survey, an inspection, and an audit, explained across time rather than technically",
+    "Why only five to ten percent of the world's vessels transmit usable auto log data, and what happens to the rest",
+    "What an experienced inspector is actually looking for when he boards a vessel, and why it is rarely the pipelines",
+    "How to build a mentorship structure that works in practice, not just as a philosophy",
+    "What the psychological cost of leaving the sea permanently looks like from the inside",
+    "How IMEI's first international chapter in Singapore got built, and who received the first call when it came through",
+  ],
+  takeaways: [
+    {
+      number: "01",
+      title: "If you turn a blind eye, you are seen as taking part in it.",
+      body:
+        "Kaushik's father, a Princeton-educated statistician who rose through the Indian civil service, gave him one piece of advice when he joined the merchant navy. That advice has stayed for forty years. “If you turn a blind eye towards inefficiency and corruption, it is also seen as you taking part in that.” The result, by his own account: very good sleep at night.",
+    },
+    {
+      number: "02",
+      title: "Integrity is not just a moral position. It is a career strategy.",
+      body:
+        "When Kaushik chose what he called “the self-righteous path” after leaving the sea, he acknowledged that it meant missing certain opportunities for growth available to those willing to compromise. His reading of the long game is different. “Hopefully I have earned a lot of respect from the industry. And that's what eggs me on and that's what propels me to do more for the fraternity.”",
+    },
+    {
+      number: "03",
+      title: "An inspector looks at safety culture, not at pipelines.",
+      body:
+        "In his years at Lloyd Register, Kaushik says he never actually inspected one hundred percent of what he was scoped to see. “I need to talk to people to understand how the safety culture is on board. I need to see some records, and believe me, with my experience, I could know if somebody is fudging something or not.” The attitude and behaviour of the crew in front of the inspector, he says, tells you more than any open crankshaft.",
+    },
+    {
+      number: "04",
+      title: "Not everyone is trying to fool you.",
+      body:
+        "As Chief Engineer, Kaushik had a boiler due for survey that had not cooled sufficiently. He told the surveyor it was not ready. The surveyor did not believe him and entered anyway. He came out badly burnt. The lesson Kaushik drew was the opposite of what you might expect. “Not everyone is trying to fool you, you must tend to believe by having a look around.” The surveyor credited the remaining items and left.",
+    },
+    {
+      number: "05",
+      title: "Sometimes nothing is okay.",
+      body:
+        "As a surveyor, Kaushik boarded a vessel where the chief engineer, expecting his relief, was already in civilian clothes with his bags packed. Nothing had been opened for survey. Under gentle but persistent questioning, the crew opened the engine room. “Nothing was okay.” What began as an anecdote ended with a condition of class, a workshop called in, and a stay of five to six days instead of the usual one and a half.",
+    },
+    {
+      number: "06",
+      title: "Audit is the past. Inspection is the present. Survey is the future.",
+      body:
+        "Three terms that maritime professionals use interchangeably and, in Kaushik's view, incorrectly. An auditor looks at records. An inspector checks whether the fire pump is making pressure right now. A surveyor opens equipment to certify it for the next five years. “A survey is something for the future, which means that I'd like to see something opened up as a surveyor.” Lloyd Register gave him the rare opportunity to carry out all three activities in the same role.",
+    },
+    {
+      number: "07",
+      title: "Only five to ten percent of vessels transmit auto log data.",
+      body:
+        "Kaushik has spent a decade in fleet performance. His assessment of where the industry actually stands on digitalization is blunt. “About five to ten percent only have auto log data which is coming in. The rest of the data is still manual.” The gap between conference talk about digitalization and the Excel spreadsheets running actual ships is not, in his view, closing fast enough.",
+    },
+    {
+      number: "08",
+      title: "Data quality is the real problem, not data volume.",
+      body:
+        "The issue is not how much data ships generate. It is whether that data is reliable. Kaushik's framing is direct: “our data quality sucks, if I may use terminology from Gen Z.” His counterintuitive position is that frequency matters less than accuracy. “Even once every 12 hours, as long as that data point is good and it's correct, our performance can be good.”",
+    },
+    {
+      number: "09",
+      title: "Technology without crew competency becomes a defunct piece of equipment.",
+      body:
+        "Kaushik's concern about digital technology on ships is not scepticism about the technology itself. It is about the match between the technology and the crew operating it. When that match is absent, the outcome is predictable. “People who are going to use it, it's a nightmare on board. And then it's a defunct piece of equipment lying in one corner of the engine room.”",
+    },
+    {
+      number: "10",
+      title: "Mentorship is thirty to forty percent generic and sixty to seventy percent customized.",
+      body:
+        "Kaushik's framework for mentorship resists the idea that one experienced person can effectively guide anyone. Context matters more than seniority. “It's all different strokes for different folks here, mind you. There's not one single answer. Some part of it is generic in my opinion, maybe thirty to forty percent. But the balance sixty, seventy percent is the customized stuff which you have to understand what the person has been through.”",
+    },
+    {
+      number: "11",
+      title: "Stop the weld halfway. That is where the learning happens.",
+      body:
+        "The mentor who shaped Kaushik most in his early sea years was his second engineer, Mr. Binny, who later died in a vessel accident. What he remembers is a specific method. “He used to teach not by just telling the answer. He used to teach us by telling us, find it out the correct way.” If a task was half right, Binny would correct course mid-task rather than letting the error complete. “When you're going wrong, at the correct time, if you do a course correction, then you tend to learn the correct thing.”",
+    },
+    {
+      number: "12",
+      title: "You pick a few good people and then make it happen.",
+      body:
+        "The IMEI Singapore chapter had been attempted before and had not gathered momentum. Kaushik's approach was simple in description, if not in execution: identify the right people, register the body with the ROC Singapore, and build from there. When it came through, he called the then-president of IMEI, Mr. Vijendra Jain, his own batchmate from Marine College, at around ten o'clock at night to share the news.",
+    },
+    {
+      number: "13",
+      title: "Engineers from naval dockyards had no unified voice.",
+      body:
+        "One of the outcomes of the Singapore chapter that Kaushik speaks about with clear satisfaction is not the institution itself but who it brought in. Engineers from Mazagon Docks, naval dockyards, Vizag Port Trust, and Chennai Port Trust, professionals who had no alumni network and no forum to speak from, finally had one. “They were not getting a unified voice or a forum to come out and share what they had in mind.”",
+    },
+    {
+      number: "14",
+      title: "As a result, I get very good sleep at night.",
+      body:
+        "It is the closing line of his answer about staying honest across forty years, and it is delivered without drama. The opportunities that came from compromising his principles were visible, and he acknowledges them plainly. What he chose instead was a quieter metric. “As a result I get very good sleep at night, Shankar, just to let you know.” For a career that has spanned engine rooms, classification societies, fleet performance desks, and institutional leadership, it may be the most specific thing he says.",
+    },
+  ],
+  references: [
+    "DMET Kolkata (Directorate of Marine Engineering Training)",
+    "Lloyd Register and LR QA (Lloyd Register Quality Assurance)",
+    "Germanischer Lloyd, now part of DNV",
+    "Anglo Eastern",
+    "Dockwise (heavy lift shipping)",
+    "StormGeo, acquired by Alfa Laval",
+    "Njord, part of Maersk Tankers",
+    "ABS (American Bureau of Shipping)",
+    "Applied Research International (ARI)",
+    "IMEI (Institute of Marine Engineers India)",
+    "DMET Singapore Alumni Association",
+    "ISWAN (International Seafarers' Welfare and Assistance Network)",
+    "CMMI (Company of Master Mariners in India)",
+    "ISM Code (International Safety Management Code)",
+    "MARPOL (Marine Pollution Convention)",
+    "ISO 9000, ISO 14000, ISO 45000",
+    "ONGC and DGH (Director General of Hydrocarbons)",
+    "Maritime India Vision / Amrit Kaal 2047",
+    "Mazagon Docks, Vizag Port Trust, Chennai Port Trust",
+  ],
+  find: [{ label: "LinkedIn", url: "https://www.linkedin.com/in/kkseal/" }],
+  closing:
+    "This piece draws from a longer conversation with Kaushik Kumar Seal on the maritribeOne podcast.",
+  chapters: [
+    { time: "00:00", label: "Welcome to maritribeOne" },
+    { time: "00:26", label: "His father's one rule on corruption" },
+    { time: "03:33", label: "The conversation before leaving the sea" },
+    { time: "05:44", label: "What a surveyor actually looks for" },
+    { time: "08:35", label: "The boiler the surveyor entered anyway" },
+    { time: "10:29", label: "The chief engineer who was ready to leave" },
+    { time: "17:02", label: "Survey, inspection, audit: across time" },
+    { time: "19:56", label: "From Lloyd's to IMEI presidency" },
+    { time: "31:56", label: "Building IMEI's first chapter in Singapore" },
+    { time: "35:50", label: "Data rich, insight poor: where it goes" },
+    { time: "38:54", label: "Mentorship as a movement" },
+    { time: "42:04", label: "Three people he would call to dinner" },
+  ],
+};
+
 export const episodeDetails: Record<string, EpisodeDetail> = {
   [khatriDetail.slug]: khatriDetail,
   [bhatiaDetail.slug]: bhatiaDetail,
+  [sealDetail.slug]: sealDetail,
 };
 
 /** The episode surfaced in "featured" slots (newest fully-produced episode). */
 export const featuredEpisode: EpisodeDetail = khatriDetail;
 
 export function getEpisodeBySlug(slug: string): EpisodeDetail | null {
+  const summary = episodeSummaries.find((episode) => episode.slug === slug);
+  // Drafts are unreachable by URL, not just unlisted.
+  if (!summary || !summary.published) return null;
+
   const detail = episodeDetails[slug];
   if (detail) return detail;
-
-  const summary = episodeSummaries.find((episode) => episode.slug === slug);
-  if (!summary) return null;
 
   return {
     ...summary,

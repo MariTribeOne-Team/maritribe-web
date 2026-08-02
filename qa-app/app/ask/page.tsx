@@ -1,12 +1,21 @@
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { retrievalPreviewAnswer } from "@/lib/retrieval-preview";
 import { PublicHeader } from "../components/public-header";
 import { PageHero } from "../components/page-hero";
 
+/**
+ * Route withheld. `/ask` is an internal preview, not part of the current public
+ * site: unlinked from every nav and returns 404 so it cannot be reached or
+ * indexed. Flip this to `true` to bring the page back.
+ */
+const ROUTE_ENABLED = false;
+
 export default async function AskPage() {
+  if (!ROUTE_ENABLED) notFound();
+
   return (
     <>
-      <PublicHeader active="ask" />
+      <PublicHeader active="home" />
       <PageHero overline="Ask Preview" title="Grounded answers from the maritime deck" />
 
       <main className="page-shell">

@@ -15,6 +15,7 @@ qa-app/.next*
 qa-app/.open-next
 qa-app/.wrangler
 qa-app/cloudflare-env.d.ts
+qa-app/tsconfig.tsbuildinfo
 
 # QA backend generated files
 qa-backend/node_modules

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { EpisodeChapter } from "@/lib/public-content";
+import { listenLinks, type EpisodeChapter } from "@/lib/public-content";
 
 function toSeconds(time: string): number {
   const parts = time.split(":").map((value) => Number(value));
@@ -64,19 +64,18 @@ export function EpisodePlayer({
               : "Playing on maritribeOne · tap a chapter to jump"}
           </span>
           <div className="listen-links">
-            <a href="#">Spotify</a>
-            <a href="#">Apple</a>
-            {youtubeId ? (
-              <a
-                href={`https://www.youtube.com/watch?v=${youtubeId}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                YouTube
-              </a>
-            ) : (
-              <a href="#">YouTube</a>
-            )}
+            <a href={listenLinks.spotify} target="_blank" rel="noreferrer">
+              Spotify
+            </a>
+            <a
+              href={
+                youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : listenLinks.youtube
+              }
+              target="_blank"
+              rel="noreferrer"
+            >
+              YouTube
+            </a>
           </div>
         </div>
       </div>

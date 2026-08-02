@@ -95,7 +95,7 @@ const retentionRows: { data: string; kind: "delete" | "keep"; label: string; ret
 export default function DeleteAccountPage() {
   return (
     <>
-      <PublicHeader active="account" mode="marketing" />
+      <PublicHeader active="account" />
 
       <div className="hero">
         <div className="hero-inner">
